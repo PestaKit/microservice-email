@@ -18,6 +18,22 @@ consumes:
 produces:
   - application/json
 paths:
+  /templates:
+    get:
+      tags:
+        - template
+      summary: Get templates list
+      operationId: getTemplatesList
+      responses:
+        '200':
+          description: Get templates List
+          schema:
+            title: Templates
+            type: array
+            items:
+              $ref: '#/definitions/Template'
+        '404':
+          description: Template not found
   '/templates/{templateId}':
     get:
       tags:
@@ -41,13 +57,6 @@ paths:
         '404':
           description: Template not found
 definitions:
-  Category:
-    type: object
-    properties:
-      url:
-        type: string
-      name:
-        type: string
   Template:
     type: object
     properties:
@@ -55,6 +64,10 @@ definitions:
         type: string
       name:
         type: string
+      tags:
+        type: array
+        items:
+          type: string
       parameters:
         type: array
         items:
