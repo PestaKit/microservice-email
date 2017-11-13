@@ -2,7 +2,6 @@ package io.pestakit.email.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -17,13 +16,13 @@ public class SwaggerDocumentationConfig {
 
     ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("Fruits API")
-                .description("An API to demonstrate Swagger and Spring Boot")
+                .title("Email API")
+                .description("An API to handle templates and send an email from a template.")
                 .license("")
                 .licenseUrl("http://unlicense.org")
                 .termsOfServiceUrl("")
                 .version("0.1.0")
-                .contact(new Contact("", "", ""))
+                .contact(new Contact("", "https://github.com/PestaKit/microservice-email", ""))
                 .build();
     }
 

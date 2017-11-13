@@ -3,14 +3,14 @@ package io.pestakit.email.api.spec.steps;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import io.avalia.fruits.ApiException;
-import io.avalia.fruits.ApiResponse;
-import io.avalia.fruits.api.DefaultApi;
-import io.avalia.fruits.api.dto.Fruit;
+import io.pestakit.email.ApiException;
+import io.pestakit.email.ApiResponse;
+import io.pestakit.email.api.DefaultApi;
+import io.pestakit.email.api.dto.Fruit;
 import io.pestakit.email.api.spec.helpers.Environment;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Created by Olivier Liechti on 27/07/17.
