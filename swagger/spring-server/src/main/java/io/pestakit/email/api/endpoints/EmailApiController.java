@@ -51,8 +51,10 @@ public class EmailApiController implements EmailsApi {
 
     private EmailEntity toEmailEntity(Email email) {
         EmailEntity entity = new EmailEntity();
-//        entity.setSender(email.getSender());
-//        entity.setRecipient(email.getRecipient());
+        entity.setSender(email.getSender());
+        entity.setRecipients(email.getRecipients());
+        entity.setCarbonCopy(email.getCarbonCopy());
+        entity.setBlindCarbonCopy(email.getBlindCarbonCopy());
         entity.setSubject(email.getSubject());
         entity.setBody(email.getBody());
         return entity;
@@ -60,8 +62,10 @@ public class EmailApiController implements EmailsApi {
 
     private Email toEmail(EmailEntity entity) {
         Email email = new Email();
-//        email.setSender(entity.getSender());
-//        email.setRecipient(entity.getRecipient());
+        email.setSender(entity.getSender());
+        email.setRecipients(entity.getRecipients());
+        email.setCarbonCopy(entity.getCarbonCopy());
+        email.setBlindCarbonCopy(entity.getBlindCarbonCopy());
         email.setSubject(entity.getSubject());
         email.setBody(entity.getBody());
         return email;

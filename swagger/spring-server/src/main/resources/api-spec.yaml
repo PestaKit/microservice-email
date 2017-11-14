@@ -203,55 +203,6 @@ paths:
           schema:
             $ref: '#/definitions/Email'
 
-  /persons:
-    post:
-      summary: Create a person
-      operationId: createPerson
-      consumes:
-        - application/json
-      parameters:
-        - name: person
-          in: body
-          description: Create a person
-          required: true
-          schema:
-            $ref: '#/definitions/Person'
-      responses:
-        '201':
-          description: Person created
-          schema:
-            type: object
-    get:
-      summary: Get persons list
-      operationId: getPersons
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: Success
-          schema:
-            title: Persons
-            type: array
-            items:
-              $ref: '#/definitions/Person'
-
-  /persons/{id}:
-    get:
-      summary: Get a person
-      operationId: getPerson
-      parameters:
-        - name: id
-          in: path
-          type: integer
-          format: int64
-          description: person ID
-          required: true
-      responses:
-        '200':
-          description: Person geted
-          schema:
-            $ref: '#/definitions/Person'
-
 definitions:
   Tag:
     type: object
@@ -283,24 +234,20 @@ definitions:
     type: object
     properties:
       sender:
-        $ref: '#/definitions/Person'
+        type: string
       recipients:
         type: array
         items:
-          $ref: '#/definitions/Person'
+          type: string
+      carbonCopy:
+        type: array
+        items:
+          type: string
+      blindCarbonCopy:
+        type: array
+        items:
+          type: string
       subject:
         type: string
       body:
         type: string
-
-  Person:
-    type: object
-    properties:
-      firstName:
-        type: string
-      lastName:
-        type: string
-      emailAddresses:
-        type: array
-        items:
-          type: string

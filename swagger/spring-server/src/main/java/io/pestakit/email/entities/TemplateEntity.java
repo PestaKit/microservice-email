@@ -1,10 +1,8 @@
 package io.pestakit.email.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 public class TemplateEntity implements Serializable {
@@ -15,8 +13,14 @@ public class TemplateEntity implements Serializable {
 
     private String url;
     private String name;
-    //    private List<TagEntity> tags;
-//    private List<String> parameters;
+
+    @ElementCollection
+    @OneToMany(cascade = {CascadeType.ALL})
+    private List<TagEntity> tags;
+
+    @ElementCollection
+    private List<String> parameters;
+
     private String body;
 
     public long getId() {
@@ -39,37 +43,37 @@ public class TemplateEntity implements Serializable {
         this.name = name;
     }
 
-//    public List<TagEntity> getTags() {
-//        return tags;
-//    }
-//
-//    public void setTags(List<TagEntity> tags) {
-//        this.tags = tags;
-//    }
-//
-//    public void addTag(TagEntity tag) {
-//        tags.add(tag);
-//    }
-//
-//    public void removeTag(TagEntity tag) {
-//        tags.remove(tag);
-//    }
-//
-//    public List<String> getParameters() {
-//        return parameters;
-//    }
-//
-//    public void setParameters(List<String> parameters) {
-//        this.parameters = parameters;
-//    }
-//
-//    public void addParameter(String parameter) {
-//        parameters.add(parameter);
-//    }
-//
-//    public void removeParameter(String parameter) {
-//        parameters.remove(parameter);
-//    }
+    public List<TagEntity> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<TagEntity> tags) {
+        this.tags = tags;
+    }
+
+    public void addTag(TagEntity tag) {
+        tags.add(tag);
+    }
+
+    public void removeTag(TagEntity tag) {
+        tags.remove(tag);
+    }
+
+    public List<String> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(List<String> parameters) {
+        this.parameters = parameters;
+    }
+
+    public void addParameter(String parameter) {
+        parameters.add(parameter);
+    }
+
+    public void removeParameter(String parameter) {
+        parameters.remove(parameter);
+    }
 
     public String getBody() {
         return body;

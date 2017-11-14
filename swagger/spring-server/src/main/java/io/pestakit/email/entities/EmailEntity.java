@@ -2,6 +2,7 @@ package io.pestakit.email.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 public class EmailEntity implements Serializable {
@@ -10,8 +11,16 @@ public class EmailEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-//    private Person sender;
-//    private List<Person> recipients;
+    private String sender;
+
+    @ElementCollection
+    private List<String> recipients;
+
+    @ElementCollection
+    private List<String> carbonCopy;
+
+    @ElementCollection
+    private List<String> blindCarbonCopy;
 
     private String subject;
     private String body;
@@ -20,29 +29,61 @@ public class EmailEntity implements Serializable {
         return id;
     }
 
-//    public Person getSender() {
-//        return sender;
-//    }
-//
-//    public void setSender(Person sender) {
-//        this.sender = sender;
-//    }
-//
-//    public List<Person> getRecipients() {
-//        return recipients;
-//    }
-//
-//    public void setRecipients(List<Person> recipients) {
-//        this.recipients = recipients;
-//    }
-//
-//    public void addRecipient(Person recipient) {
-//        recipients.add(recipient);
-//    }
-//
-//    public void removeRecipient(Person recipient) {
-//        recipients.remove(recipient);
-//    }
+    public String getSender() {
+        return sender;
+    }
+
+    public void setSender(String sender) {
+        this.sender = sender;
+    }
+
+    public List<String> getRecipients() {
+        return recipients;
+    }
+
+    public void setRecipients(List<String> recipients) {
+        this.recipients = recipients;
+    }
+
+    public void addRecipient(String recipient) {
+        recipients.add(recipient);
+    }
+
+    public void removeRecipient(String recipient) {
+        recipients.remove(recipient);
+    }
+
+    public List<String> getCarbonCopy() {
+        return carbonCopy;
+    }
+
+    public void setCarbonCopy(List<String> carbonCopy) {
+        this.carbonCopy = carbonCopy;
+    }
+
+    public void addCarbonCopy(String recipient) {
+        carbonCopy.add(recipient);
+    }
+
+    public void removeCarbonCopy(String recipient) {
+        carbonCopy.remove(recipient);
+    }
+
+    public List<String> getBlindCarbonCopy() {
+        return blindCarbonCopy;
+    }
+
+    public void setBlindCarbonCopy(List<String> blindCarbonCopy) {
+        this.blindCarbonCopy = blindCarbonCopy;
+    }
+
+    public void addBlindCarbonCopy(String recipient) {
+        blindCarbonCopy.add(recipient);
+    }
+
+    public void removeBlindCarbonCopy(String recipient) {
+        blindCarbonCopy.remove(recipient);
+    }
 
     public String getSubject() {
         return subject;
