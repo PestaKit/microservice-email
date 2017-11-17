@@ -3,6 +3,7 @@ package io.pestakit.email.api.spec;
 import cucumber.api.CucumberOptions;
 import cucumber.api.junit.Cucumber;
 import org.junit.runner.RunWith;
+import org.junit.Test;
 
 /**
  * @author Olivier Liechti (olivier.liechti@heig-vd.ch)
