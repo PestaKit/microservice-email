@@ -2,6 +2,7 @@ package io.pestakit.email.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -46,11 +47,17 @@ public class EmailEntity implements Serializable {
     }
 
     public void addRecipient(String recipient) {
+        if (recipients == null) {
+            recipients = new ArrayList<>();
+        }
+
         recipients.add(recipient);
     }
 
     public void removeRecipient(String recipient) {
-        recipients.remove(recipient);
+        if (recipients != null) {
+            recipients.remove(recipient);
+        }
     }
 
     public List<String> getCarbonCopy() {
@@ -62,11 +69,17 @@ public class EmailEntity implements Serializable {
     }
 
     public void addCarbonCopy(String recipient) {
+        if (carbonCopy == null) {
+            carbonCopy = new ArrayList<>();
+        }
+
         carbonCopy.add(recipient);
     }
 
     public void removeCarbonCopy(String recipient) {
-        carbonCopy.remove(recipient);
+        if (carbonCopy != null) {
+            carbonCopy.remove(recipient);
+        }
     }
 
     public List<String> getBlindCarbonCopy() {
@@ -78,11 +91,17 @@ public class EmailEntity implements Serializable {
     }
 
     public void addBlindCarbonCopy(String recipient) {
+        if (blindCarbonCopy == null) {
+            blindCarbonCopy = new ArrayList<>();
+        }
+
         blindCarbonCopy.add(recipient);
     }
 
     public void removeBlindCarbonCopy(String recipient) {
-        blindCarbonCopy.remove(recipient);
+        if (blindCarbonCopy != null) {
+            blindCarbonCopy.remove(recipient);
+        }
     }
 
     public String getSubject() {

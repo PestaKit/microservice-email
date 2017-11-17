@@ -2,6 +2,7 @@ package io.pestakit.email.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -52,11 +53,17 @@ public class TemplateEntity implements Serializable {
     }
 
     public void addTag(TagEntity tag) {
+        if (tags == null) {
+            tags = new ArrayList<>();
+        }
+
         tags.add(tag);
     }
 
     public void removeTag(TagEntity tag) {
-        tags.remove(tag);
+        if (tags != null) {
+            tags.remove(tag);
+        }
     }
 
     public List<String> getParameters() {
@@ -68,11 +75,17 @@ public class TemplateEntity implements Serializable {
     }
 
     public void addParameter(String parameter) {
+        if (parameters == null) {
+            parameters = new ArrayList<>();
+        }
+
         parameters.add(parameter);
     }
 
     public void removeParameter(String parameter) {
-        parameters.remove(parameter);
+        if (parameters != null) {
+            parameters.remove(parameter);
+        }
     }
 
     public String getBody() {
