@@ -13,8 +13,9 @@ import io.pestakit.email.api.DefaultApi;
 
 import io.pestakit.email.api.spec.helpers.Environment;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertEquals;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 /**
  * Created by Olivier Liechti on 27/07/17.
@@ -22,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 public class TemplatesSteps {
 
     Template template;
+    List<Template> templates;
 
     private Environment environment;
     private DefaultApi api;
@@ -49,6 +51,7 @@ public class TemplatesSteps {
             lastApiResponse = api.createTemplateWithHttpInfo(template);
             lastApiCallThrewException = false;
             lastApiException = null;
+            templates = api.getTemplates();
             lastStatusCode = lastApiResponse.getStatusCode();
         } catch (ApiException e) {
             lastApiCallThrewException = true;
@@ -60,12 +63,18 @@ public class TemplatesSteps {
 
     @Then("^I receive a (\\d+) status code$")
     public void iReceiveAStatusCode(int arg0) throws Throwable {
-        assertEquals(201, arg0);
+        assertEquals(arg0, lastStatusCode);
+    }
+
+    @And("^Response body should contain all templates$")
+    public void responseBodyShouldContainAllTemplates() throws Throwable {
+        assertFalse(templates.isEmpty());
     }
 
     @Given("^I have a template payload$")
     public void iHaveATemplatePayload() throws Throwable {
         template = new io.pestakit.email.api.dto.Template();
-
     }
+
+
 }
