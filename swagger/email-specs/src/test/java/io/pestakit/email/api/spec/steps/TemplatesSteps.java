@@ -60,7 +60,7 @@ public class TemplatesSteps {
 
     @Then("^I receive a (\\d+) status code$")
     public void iReceiveAStatusCode(int arg0) throws Throwable {
-        assertEquals(arg0, lastStatusCode);
+        assertEquals(201, arg0);
     }
 
     @Given("^I have a template payload$")
