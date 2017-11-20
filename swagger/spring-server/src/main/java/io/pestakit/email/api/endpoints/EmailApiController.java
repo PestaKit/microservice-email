@@ -4,6 +4,7 @@ import io.pestakit.email.api.EmailsApi;
 import io.pestakit.email.api.model.Email;
 import io.pestakit.email.entities.EmailEntity;
 import io.pestakit.email.repositories.EmailRepository;
+import io.pestakit.email.service.EmailService;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +19,28 @@ import java.util.List;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-07-26T19:36:34.802Z")
 
+/**
+ * This class is used to handle the /emails endpoint
+ * It will get emails from the GET request and
+ * Send email with the POST request
+ * @author Loan Lassalle, Wojciech Myszkorowski, Jérémie Zanone and Tano Iannetta
+ */
 @Controller
 public class EmailApiController implements EmailsApi {
 
     @Autowired
     EmailRepository emailRepository;
 
+    @Autowired
+    public EmailService emailService;
+
+
+    /**
+     * Process POST request
+     * Save email in DB and send it
+     * @param email to save and to send
+     * @return todo ??
+     */
     public ResponseEntity<Object> createEmail(@ApiParam(value = "", required = true) @Valid @RequestBody Email email) {
         EmailEntity newEmailEntity = toEmailEntity(email);
         emailRepository.save(newEmailEntity);
@@ -32,6 +49,9 @@ public class EmailApiController implements EmailsApi {
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")
                 .buildAndExpand(newEmailEntity.getId()).toUri();
+
+        // send the email
+        emailService.sendSimpleMessage(email);
 
         return ResponseEntity.created(location).build();
     }
