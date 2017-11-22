@@ -2,7 +2,9 @@ package io.pestakit.email.api.endpoints;
 
 import io.pestakit.email.api.EmailsApi;
 import io.pestakit.email.api.model.Email;
+import io.pestakit.email.api.model.Parameter;
 import io.pestakit.email.entities.EmailEntity;
+import io.pestakit.email.entities.ParameterEntity;
 import io.pestakit.email.repositories.EmailRepository;
 import io.pestakit.email.service.EmailService;
 import io.swagger.annotations.ApiParam;
@@ -34,7 +36,6 @@ public class EmailApiController implements EmailsApi {
     @Autowired
     public EmailService emailService;
 
-
     /**
      * Process POST request
      * Save email in DB and send it
@@ -50,12 +51,16 @@ public class EmailApiController implements EmailsApi {
                 .fromCurrentRequest().path("/{id}")
                 .buildAndExpand(newEmailEntity.getId()).toUri();
 
-        // send the email
+        // Send the email
         emailService.sendSimpleMessage(email);
 
         return ResponseEntity.created(location).build();
     }
 
+    /**
+     * GET /emails
+     * @return
+     */
     public ResponseEntity<List<Email>> getEmails() {
         List<Email> emails = new ArrayList<>();
         for (EmailEntity emailEntity : emailRepository.findAll()) {
@@ -65,10 +70,20 @@ public class EmailApiController implements EmailsApi {
         return ResponseEntity.ok(emails);
     }
 
+    /**
+     * GET /emails/{id}?id=
+     * @param id
+     * @return
+     */
     public ResponseEntity<Email> getEmail(Long id) {
         return ResponseEntity.ok(toEmail(emailRepository.findOne(id)));
     }
 
+    /**
+     * Transform an email to an email entity
+     * @param email
+     * @return
+     */
     private EmailEntity toEmailEntity(Email email) {
         EmailEntity entity = new EmailEntity();
         entity.setSender(email.getSender());
@@ -76,10 +91,15 @@ public class EmailApiController implements EmailsApi {
         entity.setCarbonCopy(email.getCarbonCopy());
         entity.setBlindCarbonCopy(email.getBlindCarbonCopy());
         entity.setSubject(email.getSubject());
-        entity.setBody(email.getBody());
+        entity.setParameters(toParametersEntities(email.getParameters()));
         return entity;
     }
 
+    /**
+     * Transform an email entity to an email
+     * @param email
+     * @return
+     */
     private Email toEmail(EmailEntity entity) {
         Email email = new Email();
         email.setSender(entity.getSender());
@@ -87,7 +107,61 @@ public class EmailApiController implements EmailsApi {
         email.setCarbonCopy(entity.getCarbonCopy());
         email.setBlindCarbonCopy(entity.getBlindCarbonCopy());
         email.setSubject(entity.getSubject());
-        email.setBody(entity.getBody());
+        email.setParameters(toParameters(entity.getParameters()));
         return email;
+    }
+
+    /**
+     * Tranform a list of parameters to a list of parameters entities
+     * @param parameterEntities
+     * @return
+     */
+    private List<ParameterEntity> toParametersEntities(List<Parameter> parameters) {
+        List<ParameterEntity> parameterEntities = new ArrayList<>();
+
+        for (Parameter parameter : parameters) {
+            parameterEntities.add(toParameterEntity(parameter));
+        }
+
+        return parameterEntities;
+    }
+
+    /**
+     * Tranform a list of parameters entities to a list of parameters
+     * @param parameterEntities
+     * @return
+     */
+    private List<Parameter> toParameters(List<ParameterEntity> parameterEntities) {
+        List<Parameter> parameters = new ArrayList<>();
+
+        for (ParameterEntity parameterEntity : parameterEntities) {
+            parameters.add(toParameter(parameterEntity));
+        }
+
+        return parameters;
+    }
+
+    /**
+     * Tranform a parameter entity to a parameter
+     * @param entity
+     * @return
+     */
+    private ParameterEntity toParameterEntity(Parameter parameter) {
+        ParameterEntity entity = new ParameterEntity();
+        entity.setKey(parameter.getKey());
+        entity.setValue(parameter.getValue());
+        return entity;
+    }
+
+    /**
+     * Tranform a parameter to a parameter entity
+     * @param entity
+     * @return
+     */
+    private Parameter toParameter(ParameterEntity entity) {
+        Parameter parameter = new Parameter();
+        parameter.setKey(entity.getKey());
+        parameter.setValue(entity.getValue());
+        return parameter;
     }
 }

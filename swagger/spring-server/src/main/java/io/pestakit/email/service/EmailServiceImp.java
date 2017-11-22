@@ -28,7 +28,7 @@ public class EmailServiceImp implements EmailService {
         message.setCc(email.getCarbonCopy().toArray(new String[email.getCarbonCopy().size()]));
         message.setBcc(email.getBlindCarbonCopy().toArray(new String[email.getBlindCarbonCopy().size()]));
         message.setSubject(email.getSubject());
-        message.setText(email.getBody());
+        message.setText("");
 
         mailSender.send(message);
     }

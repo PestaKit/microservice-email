@@ -24,7 +24,10 @@ public class EmailEntity implements Serializable {
     private List<String> blindCarbonCopy;
 
     private String subject;
-    private String body;
+
+    @ElementCollection
+    @OneToMany(cascade = {CascadeType.ALL})
+    private List<ParameterEntity> parameters;
 
     public long getId() {
         return id;
@@ -112,11 +115,25 @@ public class EmailEntity implements Serializable {
         this.subject = subject;
     }
 
-    public String getBody() {
-        return body;
+    public List<ParameterEntity> getParameters() {
+        return parameters;
     }
 
-    public void setBody(String body) {
-        this.body = body;
+    public void setParameters(List<ParameterEntity> parameters) {
+        this.parameters = parameters;
+    }
+
+    public void addParameter(ParameterEntity parameter) {
+        if (parameters == null) {
+            parameters = new ArrayList<>();
+        }
+
+        parameters.add(parameter);
+    }
+
+    public void removeParameter(ParameterEntity parameter) {
+        if (parameters != null) {
+            parameters.remove(parameter);
+        }
     }
 }

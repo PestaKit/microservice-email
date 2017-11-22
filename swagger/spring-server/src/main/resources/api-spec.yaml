@@ -249,5 +249,17 @@ definitions:
           type: string
       subject:
         type: string
-      body:
+      templateUrl:
+        type: string
+      parameters:
+        type: array
+        items:
+          $ref: '#/definitions/Parameter'
+
+  Parameter:
+    type: object
+    properties:
+      key:
+        type: string
+      value:
         type: string
