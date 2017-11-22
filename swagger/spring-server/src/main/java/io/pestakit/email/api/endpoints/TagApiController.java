@@ -24,6 +24,12 @@ public class TagApiController implements TagsApi {
     @Autowired
     TagRepository tagRepository;
 
+    /**
+     * Process POST request
+     * Save tag in DB
+     * @param tag to save
+     * @return todo ??
+     */
     public ResponseEntity<Object> createTag(@ApiParam(value = "", required = true) @Valid @RequestBody Tag tag) {
         TagEntity newTagEntity = toTagEntity(tag);
         tagRepository.save(newTagEntity);
@@ -36,6 +42,10 @@ public class TagApiController implements TagsApi {
         return ResponseEntity.created(location).build();
     }
 
+    /**
+     * GET /tags
+     * @return
+     */
     public ResponseEntity<List<Tag>> getTags() {
         List<Tag> tags = new ArrayList<>();
         for (TagEntity tagEntity : tagRepository.findAll()) {
@@ -45,6 +55,11 @@ public class TagApiController implements TagsApi {
         return ResponseEntity.ok(tags);
     }
 
+    /**
+     * GET /tags/{id}?id=
+     * @param id
+     * @return
+     */
     public ResponseEntity<Tag> getTag(Long id) {
         return ResponseEntity.ok(toTag(tagRepository.findOne(id)));
     }
@@ -60,6 +75,11 @@ public class TagApiController implements TagsApi {
 //        }
 //    }
 
+    /**
+     * Tranform a tag entity to a tag
+     * @param entity
+     * @return
+     */
     private TagEntity toTagEntity(Tag tag) {
         TagEntity entity = new TagEntity();
         entity.setName(tag.getName());
@@ -67,6 +87,11 @@ public class TagApiController implements TagsApi {
         return entity;
     }
 
+    /**
+     * Tranform a tag to a tag entity
+     * @param entity
+     * @return
+     */
     private Tag toTag(TagEntity entity) {
         Tag tag = new Tag();
         tag.setName(entity.getName());

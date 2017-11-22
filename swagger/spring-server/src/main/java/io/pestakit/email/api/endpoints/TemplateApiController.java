@@ -26,6 +26,12 @@ public class TemplateApiController implements TemplatesApi {
     @Autowired
     TemplateRepository templateRepository;
 
+    /**
+     * Process POST request
+     * Save template in DB
+     * @param template to save
+     * @return todo ??
+     */
     public ResponseEntity<Object> createTemplate(@ApiParam(value = "", required = true) @Valid @RequestBody Template template) {
         TemplateEntity newTemplateEntity = toTemplateEntity(template);
         templateRepository.save(newTemplateEntity);
@@ -38,6 +44,10 @@ public class TemplateApiController implements TemplatesApi {
         return ResponseEntity.created(location).build();
     }
 
+    /**
+     * GET /templates
+     * @return
+     */
     public ResponseEntity<List<Template>> getTemplates() {
         List<Template> templates = new ArrayList<>();
         for (TemplateEntity templateEntity : templateRepository.findAll()) {
@@ -47,20 +57,35 @@ public class TemplateApiController implements TemplatesApi {
         return ResponseEntity.ok(templates);
     }
 
+    /**
+     * GET /templates/{id}?id=
+     * @param id
+     * @return
+     */
     public ResponseEntity<Template> getTemplate(Long id) {
         return ResponseEntity.ok(toTemplate(templateRepository.findOne(id)));
     }
 
+    /**
+     * Transform a template to template entity
+     * @param template
+     * @return
+     */
     private TemplateEntity toTemplateEntity(Template template) {
         TemplateEntity entity = new TemplateEntity();
         entity.setUrl(template.getUrl());
         entity.setName(template.getName());
-        entity.setTags(toTagsEntity(template.getTags()));
+        entity.setTags(toTagsEntities(template.getTags()));
         entity.setParameters(template.getParameters());
         entity.setBody(template.getBody());
         return entity;
     }
 
+    /**
+     * Transform a template entity to template
+     * @param template
+     * @return
+     */
     private Template toTemplate(TemplateEntity entity) {
         Template template = new Template();
         template.setUrl(entity.getUrl());
@@ -71,7 +96,12 @@ public class TemplateApiController implements TemplatesApi {
         return template;
     }
 
-    private List<TagEntity> toTagsEntity(List<Tag> tags) {
+    /**
+     * Transform a tags to tags entities
+     * @param template
+     * @return
+     */
+    private List<TagEntity> toTagsEntities(List<Tag> tags) {
         List<TagEntity> tagEntities = new ArrayList<>();
 
         for (Tag tag : tags) {
@@ -81,6 +111,11 @@ public class TemplateApiController implements TemplatesApi {
         return tagEntities;
     }
 
+    /**
+     * Transform a tags entities to tags
+     * @param template
+     * @return
+     */
     private List<Tag> toTags(List<TagEntity> tagEntities) {
         List<Tag> tags = new ArrayList<>();
 
@@ -91,6 +126,11 @@ public class TemplateApiController implements TemplatesApi {
         return tags;
     }
 
+    /**
+     * Tranform a tag to tag entity
+     * @param tag
+     * @return
+     */
     private TagEntity toTagEntity(Tag tag) {
         TagEntity entity = new TagEntity();
         entity.setName(tag.getName());
@@ -98,6 +138,11 @@ public class TemplateApiController implements TemplatesApi {
         return entity;
     }
 
+    /**
+     * Tranform a tag entity to tag
+     * @param tag
+     * @return
+     */
     private Tag toTag(TagEntity entity) {
         Tag tag = new Tag();
         tag.setName(entity.getName());
