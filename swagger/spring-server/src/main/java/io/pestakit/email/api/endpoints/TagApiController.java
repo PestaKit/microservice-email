@@ -31,15 +31,18 @@ public class TagApiController implements TagsApi {
      * @return todo ??
      */
     public ResponseEntity<Object> createTag(@ApiParam(value = "", required = true) @Valid @RequestBody Tag tag) {
-        TagEntity newTagEntity = toTagEntity(tag);
-        tagRepository.save(newTagEntity);
-        Long id = newTagEntity.getId();
+        try {
+            TagEntity newTagEntity = toTagEntity(tag);
+            tagRepository.save(newTagEntity);
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest().path("/{id}")
-                .buildAndExpand(newTagEntity.getId()).toUri();
+            URI location = ServletUriComponentsBuilder
+                    .fromCurrentRequest().path("/{id}")
+                    .buildAndExpand(newTagEntity.getId()).toUri();
 
-        return ResponseEntity.created(location).build();
+            return ResponseEntity.created(location).build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     /**
@@ -47,12 +50,16 @@ public class TagApiController implements TagsApi {
      * @return
      */
     public ResponseEntity<List<Tag>> getTags() {
-        List<Tag> tags = new ArrayList<>();
-        for (TagEntity tagEntity : tagRepository.findAll()) {
-            tags.add(toTag(tagEntity));
-        }
+        try {
+            List<Tag> tags = new ArrayList<>();
+            for (TagEntity tagEntity : tagRepository.findAll()) {
+                tags.add(toTag(tagEntity));
+            }
 
-        return ResponseEntity.ok(tags);
+            return ResponseEntity.ok(tags);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     /**
@@ -61,7 +68,11 @@ public class TagApiController implements TagsApi {
      * @return
      */
     public ResponseEntity<Tag> getTag(Long id) {
-        return ResponseEntity.ok(toTag(tagRepository.findOne(id)));
+        try {
+            return ResponseEntity.ok(toTag(tagRepository.findOne(id)));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 //    public ResponseEntity<Void> deleteTag(Long id) {

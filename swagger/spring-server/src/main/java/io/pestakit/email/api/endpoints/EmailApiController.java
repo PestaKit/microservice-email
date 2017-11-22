@@ -43,18 +43,21 @@ public class EmailApiController implements EmailsApi {
      * @return todo ??
      */
     public ResponseEntity<Object> createEmail(@ApiParam(value = "", required = true) @Valid @RequestBody Email email) {
-        EmailEntity newEmailEntity = toEmailEntity(email);
-        emailRepository.save(newEmailEntity);
-        Long id = newEmailEntity.getId();
+        try {
+            EmailEntity emailEntity = toEmailEntity(email);
+            emailRepository.save(emailEntity);
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest().path("/{id}")
-                .buildAndExpand(newEmailEntity.getId()).toUri();
+            URI location = ServletUriComponentsBuilder
+                    .fromCurrentRequest().path("/{id}")
+                    .buildAndExpand(emailEntity.getId()).toUri();
 
-        // Send the email
-        emailService.sendSimpleMessage(email);
+            // Send the email
+            emailService.sendSimpleMessage(email);
 
-        return ResponseEntity.created(location).build();
+            return ResponseEntity.created(location).build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     /**
@@ -62,12 +65,16 @@ public class EmailApiController implements EmailsApi {
      * @return
      */
     public ResponseEntity<List<Email>> getEmails() {
-        List<Email> emails = new ArrayList<>();
-        for (EmailEntity emailEntity : emailRepository.findAll()) {
-            emails.add(toEmail(emailEntity));
-        }
+        try {
+            List<Email> emails = new ArrayList<>();
+            for (EmailEntity emailEntity : emailRepository.findAll()) {
+                emails.add(toEmail(emailEntity));
+            }
 
-        return ResponseEntity.ok(emails);
+            return ResponseEntity.ok(emails);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     /**
@@ -76,7 +83,11 @@ public class EmailApiController implements EmailsApi {
      * @return
      */
     public ResponseEntity<Email> getEmail(Long id) {
-        return ResponseEntity.ok(toEmail(emailRepository.findOne(id)));
+        try {
+            return ResponseEntity.ok(toEmail(emailRepository.findOne(id)));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     /**
