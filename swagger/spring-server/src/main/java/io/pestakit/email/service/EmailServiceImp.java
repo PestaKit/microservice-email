@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
  * @see EmailService
  * @author Tano Iannetta
  */
+//todo gestion exeptions voir lien
 @Component
 public class EmailServiceImp implements EmailService {
 
@@ -20,16 +21,20 @@ public class EmailServiceImp implements EmailService {
     @Override
     public void sendSimpleMessage(Email email) {
 
-        SimpleMailMessage message = new SimpleMailMessage();
+        SimpleMailMessage mail = new SimpleMailMessage();
+
 
         // set email
-        message.setFrom(email.getSender());
-        message.setTo(email.getRecipients().toArray(new String[email.getRecipients().size()]));
-        message.setCc(email.getCarbonCopy().toArray(new String[email.getCarbonCopy().size()]));
-        message.setBcc(email.getBlindCarbonCopy().toArray(new String[email.getBlindCarbonCopy().size()]));
-        message.setSubject(email.getSubject());
-        message.setText(email.getBody());
+        mail.setFrom(email.getSender());
+        mail.setTo(email.getRecipients().toArray(new String[email.getRecipients().size()]));
+        mail.setCc(email.getCarbonCopy().toArray(new String[email.getCarbonCopy().size()]));
+        mail.setBcc(email.getBlindCarbonCopy().toArray(new String[email.getBlindCarbonCopy().size()]));
+        mail.setSubject(email.getSubject());
+        mail.setText(email.getBody());
 
-        mailSender.send(message);
+        mailSender.send(mail);
+
+
+
     }
 }
