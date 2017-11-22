@@ -30,11 +30,8 @@ public class EmailServiceImp implements EmailService {
         mail.setCc(email.getCarbonCopy().toArray(new String[email.getCarbonCopy().size()]));
         mail.setBcc(email.getBlindCarbonCopy().toArray(new String[email.getBlindCarbonCopy().size()]));
         mail.setSubject(email.getSubject());
-        mail.setText(email.getBody());
+        mail.setText("");
 
         mailSender.send(mail);
-
-
-
     }
 }
