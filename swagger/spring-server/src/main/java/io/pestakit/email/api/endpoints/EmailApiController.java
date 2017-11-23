@@ -52,8 +52,10 @@ public class EmailApiController implements EmailsApi {
                     .fromCurrentRequest().path("/{id}")
                     .buildAndExpand(entity.getId()).toUri();
 
-            // Send the email
-            emailService.sendSimpleMessage(email);
+
+        //todo demande d'envoie et instanciation du tamplate
+        // send the email
+        emailService.sendSimpleMessage(email); // email sera créé depuis le service de template
 
             return ResponseEntity.created(location).build();
         } catch (Exception e) {
