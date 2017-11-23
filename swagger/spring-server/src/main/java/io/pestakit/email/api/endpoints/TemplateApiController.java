@@ -33,15 +33,18 @@ public class TemplateApiController implements TemplatesApi {
      * @return todo ??
      */
     public ResponseEntity<Object> createTemplate(@ApiParam(value = "", required = true) @Valid @RequestBody Template template) {
-        TemplateEntity newTemplateEntity = toTemplateEntity(template);
-        templateRepository.save(newTemplateEntity);
-        Long id = newTemplateEntity.getId();
+        try {
+            TemplateEntity newTemplateEntity = toTemplateEntity(template);
+            templateRepository.save(newTemplateEntity);
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest().path("/{id}")
-                .buildAndExpand(newTemplateEntity.getId()).toUri();
+            URI location = ServletUriComponentsBuilder
+                    .fromCurrentRequest().path("/{id}")
+                    .buildAndExpand(newTemplateEntity.getId()).toUri();
 
-        return ResponseEntity.created(location).build();
+            return ResponseEntity.created(location).build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     /**
@@ -49,12 +52,16 @@ public class TemplateApiController implements TemplatesApi {
      * @return
      */
     public ResponseEntity<List<Template>> getTemplates() {
-        List<Template> templates = new ArrayList<>();
-        for (TemplateEntity templateEntity : templateRepository.findAll()) {
-            templates.add(toTemplate(templateEntity));
-        }
+        try {
+            List<Template> templates = new ArrayList<>();
+            for (TemplateEntity templateEntity : templateRepository.findAll()) {
+                templates.add(toTemplate(templateEntity));
+            }
 
-        return ResponseEntity.ok(templates);
+            return ResponseEntity.ok(templates);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     /**
@@ -63,7 +70,11 @@ public class TemplateApiController implements TemplatesApi {
      * @return
      */
     public ResponseEntity<Template> getTemplate(Long id) {
-        return ResponseEntity.ok(toTemplate(templateRepository.findOne(id)));
+        try {
+            return ResponseEntity.ok(toTemplate(templateRepository.findOne(id)));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     /**
