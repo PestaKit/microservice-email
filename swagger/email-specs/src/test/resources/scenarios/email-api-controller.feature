@@ -10,7 +10,7 @@ Feature: Spring api controller email
     And I set a blindCarbonCopy
     And I set a subject
     #template + parameters
-    And I set a body
+    And I set parameters
     When I POST it to the /email endpoint
     Then I receive 201 status code
     And The recipient receive an email
