@@ -211,6 +211,10 @@ definitions:
         type: string
       name:
         type: string
+      templatesUrl:
+        type: array
+        items:
+          type: string
 
   Template:
     type: object
