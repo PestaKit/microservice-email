@@ -43,11 +43,11 @@ public class EmailApiController implements EmailsApi {
      * @return todo ??
      */
     public ResponseEntity<Object> createEmail(@ApiParam(value = "", required = true) @Valid @RequestBody Email email) {
-        try {
-            EmailEntity emailEntity = toEmailEntity(email);
-            emailRepository.save(emailEntity);
 
-            URI location = ServletUriComponentsBuilder
+        EmailEntity emailEntity = toEmailEntity(email);
+        emailRepository.save(emailEntity);
+
+        URI location = ServletUriComponentsBuilder
                     .fromCurrentRequest().path("/{id}")
                     .buildAndExpand(emailEntity.getId()).toUri();
 
@@ -56,10 +56,8 @@ public class EmailApiController implements EmailsApi {
         // send the email
         emailService.sendSimpleMessage(email); // email sera créé depuis le service de template
 
-            return ResponseEntity.created(location).build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        return ResponseEntity.created(location).build();
+
     }
 
     /**

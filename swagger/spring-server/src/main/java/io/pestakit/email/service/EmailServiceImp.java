@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
  * @see EmailService
  * @author Tano Iannetta
  */
-//todo gestion exeptions voir lien
 @Component
 public class EmailServiceImp implements EmailService {
 

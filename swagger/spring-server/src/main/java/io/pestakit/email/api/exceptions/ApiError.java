@@ -12,21 +12,21 @@ import java.util.List;
 public class ApiError {
 
     private HttpStatus status;
-    private String error;
-    private List<String> messages;
+    private String message;
+    private List<String> errors;
 
     public ApiError(HttpStatus status, String message, List<String> errors) {
         super();
         this.status = status;
-        this.error = message;
-        this.messages = errors;
+        this.message = message;
+        this.errors = errors;
     }
 
     public ApiError(HttpStatus status, String message, String error) {
         super();
         this.status = status;
-        this.error = message;
-        messages = Arrays.asList(error);
+        this.message = message;
+        errors = Arrays.asList(error);
     }
 
 
@@ -38,19 +38,19 @@ public class ApiError {
         this.status = status;
     }
 
-    public String getError() {
-        return error;
+    public String getMessage() {
+        return message;
     }
 
-    public void setError(String error) {
-        this.error = error;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
-    public List<String> getMessages() {
-        return messages;
+    public List<String> getErrors() {
+        return errors;
     }
 
-    public void setMessages(List<String> messages) {
-        this.messages = messages;
+    public void setErrors(List<String> errors) {
+        this.errors = errors;
     }
 }
