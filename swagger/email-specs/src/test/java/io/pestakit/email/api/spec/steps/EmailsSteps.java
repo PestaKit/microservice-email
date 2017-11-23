@@ -8,14 +8,16 @@ import cucumber.api.java.en.When;
 import io.pestakit.email.ApiException;
 import io.pestakit.email.ApiResponse;
 import io.pestakit.email.api.DefaultApi;
-import io.pestakit.email.api.dto.Template;
 import io.pestakit.email.api.dto.Email;
+import io.pestakit.email.api.dto.Parameter;
+import io.pestakit.email.api.dto.Template;
 import io.pestakit.email.api.spec.helpers.Environment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class EmailsSteps {
 
@@ -34,7 +36,6 @@ public class EmailsSteps {
         this.environment = environment;
         this.api = environment.getApi();
     }
-
 
     @Given("^There is a email api$")
     public void thereIsAEmailApi() throws Throwable {
@@ -58,7 +59,6 @@ public class EmailsSteps {
         email.setRecipients(recipients);
     }
 
-
     @And("^I set a blindCarbonCopy$")
     public void iSetABlindCarbonCopy() throws Throwable {
         List<String> copy = new ArrayList<>();
@@ -66,23 +66,34 @@ public class EmailsSteps {
         email.setBlindCarbonCopy(copy);
     }
 
-
     @And("^I set a subject$")
     public void iSetASubject() throws Throwable {
         email.setSubject("test cucumber");
     }
 
-    @And("^I set a body$")
-    public void iSetABody() throws Throwable {
+    @And("^I set parameters$")
+    public void iSetParameters() throws Throwable {
         template = new Template();
-        template.setBody("Mashallah je suis le body de la template");
+        template.setBody("Bonjour @Title @FirstName @LastName, comment allez vous ?");
         template.setName("TemplateTestName");
-        List<String> params = new ArrayList<>();
-        params.add("Bonjour je susi le param1");
-        params.add("Cordialement le param2");
-        params.add("Zanone Jérémie le param3");
-        template.setParameters(params);
-        email.setBody(template.getBody());
+        template.addParametersItem("@Title");
+        template.addParametersItem("@FirstName");
+        template.addParametersItem("@LastName");
+
+        Parameter parameter = new Parameter();
+        parameter.setKey("@Title");
+        parameter.setValue("Monsieur");
+        email.addParametersItem(parameter);
+
+        Parameter parameter2 = new Parameter();
+        parameter.setKey("@FirstName");
+        parameter.setValue("Jérémie");
+        email.addParametersItem(parameter2);
+
+        Parameter parameter3 = new Parameter();
+        parameter.setKey("@LastName");
+        parameter.setValue("Zanone");
+        email.addParametersItem(parameter3);
     }
 
     @When("^I POST it to the /email endpoint$")

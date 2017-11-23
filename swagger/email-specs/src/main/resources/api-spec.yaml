@@ -211,6 +211,10 @@ definitions:
         type: string
       name:
         type: string
+      templatesUrl:
+        type: array
+        items:
+          type: string
 
   Template:
     type: object
@@ -249,5 +253,17 @@ definitions:
           type: string
       subject:
         type: string
-      body:
+      templateUrl:
+        type: string
+      parameters:
+        type: array
+        items:
+          $ref: '#/definitions/Parameter'
+
+  Parameter:
+    type: object
+    properties:
+      key:
+        type: string
+      value:
         type: string

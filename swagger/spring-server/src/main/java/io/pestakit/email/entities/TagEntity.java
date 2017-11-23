@@ -1,10 +1,9 @@
 package io.pestakit.email.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class TagEntity implements Serializable {
@@ -15,6 +14,9 @@ public class TagEntity implements Serializable {
 
     private String url;
     private String name;
+
+    @ElementCollection
+    private List<String> templatesUrl;
 
     public long getId() {
         return id;
@@ -34,5 +36,27 @@ public class TagEntity implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<String> getTemplatesUrl() {
+        return templatesUrl;
+    }
+
+    public void setTemplatesUrl(List<String> templatesUrl) {
+        this.templatesUrl = templatesUrl;
+    }
+
+    public void addTemplateUrl(String templateUrl) {
+        if (templatesUrl == null) {
+            templatesUrl = new ArrayList<>();
+        }
+
+        templatesUrl.add(templateUrl);
+    }
+
+    public void removeTemplateUrl(String templateUrl) {
+        if (templatesUrl != null) {
+            templatesUrl.remove(templateUrl);
+        }
     }
 }

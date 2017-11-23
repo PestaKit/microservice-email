@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -44,12 +45,15 @@ public class EmailApiController implements EmailsApi {
      */
     public ResponseEntity<Object> createEmail(@ApiParam(value = "", required = true) @Valid @RequestBody Email email) {
 
+            EmailEntity entity = toEmailEntity(email);
+            emailRepository.save(entity);
+
         EmailEntity emailEntity = toEmailEntity(email);
         emailRepository.save(emailEntity);
 
         URI location = ServletUriComponentsBuilder
                     .fromCurrentRequest().path("/{id}")
-                    .buildAndExpand(emailEntity.getId()).toUri();
+                    .buildAndExpand(entity.getId()).toUri();
 
 
         //todo demande d'envoie et instanciation du tamplate
@@ -67,8 +71,8 @@ public class EmailApiController implements EmailsApi {
     public ResponseEntity<List<Email>> getEmails() {
         try {
             List<Email> emails = new ArrayList<>();
-            for (EmailEntity emailEntity : emailRepository.findAll()) {
-                emails.add(toEmail(emailEntity));
+            for (EmailEntity entity : emailRepository.findAll()) {
+                emails.add(toEmail(entity));
             }
 
             return ResponseEntity.ok(emails);
@@ -82,7 +86,7 @@ public class EmailApiController implements EmailsApi {
      * @param id
      * @return
      */
-    public ResponseEntity<Email> getEmail(Long id) {
+    public ResponseEntity<Email> getEmail(@ApiParam(value = "email ID", required = true) @PathVariable("id") Long id) {
         try {
             return ResponseEntity.ok(toEmail(emailRepository.findOne(id)));
         } catch (Exception e) {
@@ -108,7 +112,7 @@ public class EmailApiController implements EmailsApi {
 
     /**
      * Transform an email entity to an email
-     * @param email
+     * @param entity
      * @return
      */
     private Email toEmail(EmailEntity entity) {
@@ -124,28 +128,28 @@ public class EmailApiController implements EmailsApi {
 
     /**
      * Tranform a list of parameters to a list of parameters entities
-     * @param parameterEntities
+     * @param parameters
      * @return
      */
     private List<ParameterEntity> toParametersEntities(List<Parameter> parameters) {
-        List<ParameterEntity> parameterEntities = new ArrayList<>();
+        List<ParameterEntity> entities = new ArrayList<>();
 
         for (Parameter parameter : parameters) {
-            parameterEntities.add(toParameterEntity(parameter));
+            entities.add(toParameterEntity(parameter));
         }
 
-        return parameterEntities;
+        return entities;
     }
 
     /**
      * Tranform a list of parameters entities to a list of parameters
-     * @param parameterEntities
+     * @param entities
      * @return
      */
-    private List<Parameter> toParameters(List<ParameterEntity> parameterEntities) {
+    private List<Parameter> toParameters(List<ParameterEntity> entities) {
         List<Parameter> parameters = new ArrayList<>();
 
-        for (ParameterEntity parameterEntity : parameterEntities) {
+        for (ParameterEntity parameterEntity : entities) {
             parameters.add(toParameter(parameterEntity));
         }
 
@@ -154,7 +158,7 @@ public class EmailApiController implements EmailsApi {
 
     /**
      * Tranform a parameter entity to a parameter
-     * @param entity
+     * @param parameter
      * @return
      */
     private ParameterEntity toParameterEntity(Parameter parameter) {
