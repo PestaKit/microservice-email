@@ -52,27 +52,10 @@ public class EmailApiController implements EmailsApi {
      */
     @Override
     public ResponseEntity<Object> createEmail(@ApiParam(value = "Create an email", required = true) @RequestBody EmailPrepared emailPrepared) {
+
+
+        // prepare an email with headers, template and parameters
         EmailEntity entity = toEmailEntity(emailPrepared);
-
-        emailRepository.save(entity);
-
-        //todo
-        // process email with template
-        // 1 -> recupe template
-        // 2 -> injecter valeur
-
-
-
-
-
-
-
-        // 3 -> construire email
-
-
-
-        // 4
-
 
         // save email
         emailRepository.save(entity);
@@ -82,12 +65,8 @@ public class EmailApiController implements EmailsApi {
                 .buildAndExpand(entity.getId())
                 .toUri();
 
-
-
-
-        // 5 send email
         // send the email
-        emailService.sendSimpleMessage(toEmail(entity)); // email sera créé depuis le service de template
+        emailService.sendSimpleMessage(toEmail(entity));
 
         return ResponseEntity.created(location).build();
     }
@@ -123,6 +102,7 @@ public class EmailApiController implements EmailsApi {
 
     /**
      * Check if a template exist
+     * If it does not, set an empty template
      *
      * @param emailPrepared email prepared
      */
@@ -178,6 +158,8 @@ public class EmailApiController implements EmailsApi {
 
     /**
      * Transform an email prepared to an email entity
+     * It will as well set the body with the given template
+     * and parameters
      *
      * @param emailPrepared email prepared
      * @return an email entity
@@ -214,7 +196,7 @@ public class EmailApiController implements EmailsApi {
      *
      * @param emailPrepared email prepared
      * @return an email
-     */
+     *//*
     private Email toEmail(EmailPrepared emailPrepared) {
         Email email = new Email();
 
@@ -238,5 +220,5 @@ public class EmailApiController implements EmailsApi {
         email.setBody(body);
 
         return email;
-    }
+    }*/
 }
