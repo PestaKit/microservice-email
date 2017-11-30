@@ -1,11 +1,7 @@
 package io.pestakit.email.service;
 
-import io.pestakit.email.api.model.Email;
 import io.pestakit.email.entities.EmailEntity;
-import org.springframework.mail.MailMessage;
 import org.springframework.mail.SimpleMailMessage;
-
-import java.util.Map;
 
 public class TemplateServiceImp implements TemplateService {
     @Override
@@ -22,9 +18,9 @@ public class TemplateServiceImp implements TemplateService {
         message.setCc(JsonRetrieved.getCarbonCopy().toArray(new String[JsonRetrieved.getCarbonCopy().size()]));
         message.setBcc(JsonRetrieved.getBlindCarbonCopy().toArray(new String[JsonRetrieved.getBlindCarbonCopy().size()]));
         message.setSubject(JsonRetrieved.getSubject());
-        for(int i = 0; i < JsonRetrieved.getParameters().size();i++) {
-            message.setText(JsonRetrieved.getParameters().get(i).getValue());;
-        }
+//        for(int i = 0; i < JsonRetrieved.getParameters().size();i++) {
+//            message.setText(JsonRetrieved.getParameters().get(i).getValue());;
+//        }
 
 
 

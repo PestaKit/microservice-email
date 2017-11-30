@@ -5,6 +5,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * author: Loan Lassalle
+ */
 @Entity
 public class EmailEntity implements Serializable {
 
@@ -25,9 +28,7 @@ public class EmailEntity implements Serializable {
 
     private String subject;
 
-    @ElementCollection
-    @OneToMany(cascade = {CascadeType.ALL})
-    private List<ParameterEntity> parameters;
+    private String body;
 
     public long getId() {
         return id;
@@ -115,25 +116,11 @@ public class EmailEntity implements Serializable {
         this.subject = subject;
     }
 
-    public List<ParameterEntity> getParameters() {
-        return parameters;
+    public String getBody() {
+        return body;
     }
 
-    public void setParameters(List<ParameterEntity> parameters) {
-        this.parameters = parameters;
-    }
-
-    public void addParameter(ParameterEntity parameter) {
-        if (parameters == null) {
-            parameters = new ArrayList<>();
-        }
-
-        parameters.add(parameter);
-    }
-
-    public void removeParameter(ParameterEntity parameter) {
-        if (parameters != null) {
-            parameters.remove(parameter);
-        }
+    public void setBody(String body) {
+        this.body = body;
     }
 }

@@ -3,7 +3,6 @@ package io.pestakit.email.api.endpoints;
 import io.pestakit.email.api.TagsApi;
 import io.pestakit.email.api.model.Tag;
 import io.pestakit.email.entities.TagEntity;
-import io.pestakit.email.entities.TemplateEntity;
 import io.pestakit.email.repositories.TagRepository;
 import io.pestakit.email.repositories.TemplateRepository;
 import io.swagger.annotations.ApiParam;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.validation.Valid;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -22,74 +20,86 @@ import java.util.List;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-07-26T19:36:34.802Z")
 
+/**
+ *
+ *
+ * author: Loan Lassalle
+ */
 @Controller
 public class TagApiController implements TagsApi {
 
-    @Autowired
-    TagRepository tagRepository;
+    //TODO: Gérer les exceptions
 
     @Autowired
-    TemplateRepository templateRepository;
+    private TagRepository tagRepository;
+
+    @Autowired
+    private TemplateRepository templateRepository;
 
     /**
-     * Process POST request
-     * Save tag in DB
-     * @param tag to save
-     * @return todo ??
-     */
-    public ResponseEntity<Object> createTag(@ApiParam(value = "", required = true) @Valid @RequestBody Tag tag) {
-        try {
-            TagEntity entity = toTagEntity(tag);
-            checkTemplatesExist(entity);
-            tagRepository.save(entity);
-
-            URI location = ServletUriComponentsBuilder
-                    .fromCurrentRequest().path("/{id}")
-                    .buildAndExpand(entity.getId()).toUri();
-
-            return ResponseEntity.created(location).build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
-    /**
-     * GET /tags
-     * @return
-     */
-    public ResponseEntity<List<Tag>> getTags() {
-        try {
-            List<Tag> tags = new ArrayList<>();
-            for (TagEntity entity : tagRepository.findAll()) {
-                tags.add(toTag(entity));
-            }
-
-            return ResponseEntity.ok(tags);
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    /**
-     * GET /tags/{id}?id=
-     * @param id
-     * @return
-     */
-    public ResponseEntity<Tag> getTag(@ApiParam(value = "tag ID", required = true) @PathVariable("id") Long id) {
-        try {
-            return ResponseEntity.ok(toTag(tagRepository.findOne(id)));
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    /**
-     * DELETE /tags/{id}?id=
+     * Process POST /tags request
+     * Create a tag
      *
-     * @param id
-     * @return
+     * @param tag to create
+     * @return TODO
      */
+    @Override
+    public ResponseEntity<Object> createTag(@ApiParam(value = "Create a tag", required = true) @RequestBody Tag tag) {
+        TagEntity entity = toTagEntity(tag);
+
+        templatesExist(entity);
+        tagRepository.save(entity);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(entity.getId())
+                .toUri();
+
+        // Update tag's URL
+        entity.setUrl(location.toString());
+        tagRepository.save(entity);
+
+        return ResponseEntity.created(location).build();
+    }
+
+    /**
+     * Process GET /tags request
+     * Get all tags
+     *
+     * @return all tags
+     */
+    @Override
+    public ResponseEntity<List<Tag>> getTags() {
+        List<Tag> tags = new ArrayList<>();
+
+        for (TagEntity entity : tagRepository.findAll()) {
+            tags.add(toTag(entity));
+        }
+
+        return ResponseEntity.ok(tags);
+    }
+
+    /**
+     * Process GET /tags/{id}?id= request
+     * Get a tag
+     *
+     * @param id tag ID
+     * @return a tag
+     */
+    @Override
+    public ResponseEntity<Tag> getTag(@ApiParam(value = "tag ID", required = true) @PathVariable("id") Long id) {
+        return ResponseEntity.ok(toTag(tagRepository.findOne(id)));
+    }
+
+    /**
+     * Process DELETE /tags/{id}?id= request
+     * Delete a tag
+     *
+     * @param id tag ID
+     * @return TODO
+     */
+//    @Override
 //    public ResponseEntity<Void> deleteTag(Long id) {
 //        TagEntity entity = tagRepository.findOne(id);
 //
@@ -100,14 +110,15 @@ public class TagApiController implements TagsApi {
 //            return new ResponseEntity<Void>(HttpStatus.OK);
 //        }
 //    }
-    private void checkTemplatesExist(TagEntity entity) {
-        for (Iterator<String> iterator = entity.getTemplatesUrl().iterator(); iterator.hasNext(); ) {
-            String url = iterator.next();
 
-            Long id = Long.valueOf(url.substring(url.lastIndexOf('/') + 1));
-            TemplateEntity templateEntity = templateRepository.findOne(id);
-
-            if (templateEntity == null) {
+    /**
+     * Check if tag's templates exist
+     *
+     * @param entity tag entity
+     */
+    private void templatesExist(TagEntity entity) {
+        for (Iterator<String> iterator = entity.getTemplates().iterator(); iterator.hasNext(); ) {
+            if (templateRepository.findOne(entity.getId()) == null) {
                 iterator.remove();
             }
         }
@@ -115,27 +126,33 @@ public class TagApiController implements TagsApi {
 
     /**
      * Tranform a tag entity to a tag
-     * @param tag
-     * @return
+     *
+     * @param tag tag
+     * @return a tag entity
      */
     private TagEntity toTagEntity(Tag tag) {
         TagEntity entity = new TagEntity();
+
         entity.setName(tag.getName());
         entity.setUrl(tag.getUrl());
-        entity.setTemplatesUrl(tag.getTemplatesUrl());
+        entity.setTemplates(tag.getTemplates());
+
         return entity;
     }
 
     /**
      * Tranform a tag to a tag entity
-     * @param entity
-     * @return
+     *
+     * @param entity tag entity
+     * @return a tag
      */
     private Tag toTag(TagEntity entity) {
         Tag tag = new Tag();
+
         tag.setName(entity.getName());
         tag.setUrl(entity.getUrl());
-        tag.setTemplatesUrl(entity.getTemplatesUrl());
+        tag.setTemplates(entity.getTemplates());
+
         return tag;
     }
 }

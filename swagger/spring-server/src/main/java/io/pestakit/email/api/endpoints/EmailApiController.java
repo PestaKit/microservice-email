@@ -2,10 +2,11 @@ package io.pestakit.email.api.endpoints;
 
 import io.pestakit.email.api.EmailsApi;
 import io.pestakit.email.api.model.Email;
-import io.pestakit.email.api.model.Parameter;
+import io.pestakit.email.api.model.EmailPrepared;
 import io.pestakit.email.entities.EmailEntity;
-import io.pestakit.email.entities.ParameterEntity;
+import io.pestakit.email.entities.TemplateEntity;
 import io.pestakit.email.repositories.EmailRepository;
+import io.pestakit.email.repositories.TemplateRepository;
 import io.pestakit.email.service.EmailService;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.validation.Valid;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,157 +26,194 @@ import java.util.List;
  * This class is used to handle the /emails endpoint
  * It will get emails from the GET request and
  * Send email with the POST request
+ *
  * @author Loan Lassalle, Wojciech Myszkorowski, Jérémie Zanone and Tano Iannetta
  */
 @Controller
 public class EmailApiController implements EmailsApi {
 
-    @Autowired
-    EmailRepository emailRepository;
+    //TODO: Gérer les exceptions
 
     @Autowired
-    public EmailService emailService;
+    private EmailRepository emailRepository;
+
+    @Autowired
+    private TemplateRepository templateRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     /**
-     * Process POST request
-     * Save email in DB and send it
-     * @param email to save and to send
-     * @return todo ??
+     * Process POST /emails request
+     * Create an email with an email prepared
+     *
+     * @param emailPrepared email prepared
+     * @return TODO
      */
-    public ResponseEntity<Object> createEmail(@ApiParam(value = "", required = true) @Valid @RequestBody Email email) {
+    @Override
+    public ResponseEntity<Object> createEmail(@ApiParam(value = "Create an email", required = true) @RequestBody EmailPrepared emailPrepared) {
+        EmailEntity entity = toEmailEntity(emailPrepared);
 
-            EmailEntity entity = toEmailEntity(email);
-            emailRepository.save(entity);
-
-        EmailEntity emailEntity = toEmailEntity(email);
-        emailRepository.save(emailEntity);
+        emailRepository.save(entity);
 
         URI location = ServletUriComponentsBuilder
-                    .fromCurrentRequest().path("/{id}")
-                    .buildAndExpand(entity.getId()).toUri();
-
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(entity.getId())
+                .toUri();
 
         //todo demande d'envoie et instanciation du tamplate
         // send the email
-        emailService.sendSimpleMessage(email); // email sera créé depuis le service de template
+        emailService.sendSimpleMessage(toEmail(entity)); // email sera créé depuis le service de template
 
         return ResponseEntity.created(location).build();
-
     }
 
     /**
-     * GET /emails
-     * @return
+     * Process GET /emails request
+     * Get all emails
+     *
+     * @return all emails
      */
+    @Override
     public ResponseEntity<List<Email>> getEmails() {
-        try {
-            List<Email> emails = new ArrayList<>();
-            for (EmailEntity entity : emailRepository.findAll()) {
-                emails.add(toEmail(entity));
-            }
+        List<Email> emails = new ArrayList<>();
 
-            return ResponseEntity.ok(emails);
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+        for (EmailEntity entity : emailRepository.findAll()) {
+            emails.add(toEmail(entity));
         }
+
+        return ResponseEntity.ok(emails);
     }
 
     /**
-     * GET /emails/{id}?id=
-     * @param id
-     * @return
+     * Process GET /emails/{id}?id= request
+     * Get a tag
+     *
+     * @param id email ID
+     * @return an email
      */
+    @Override
     public ResponseEntity<Email> getEmail(@ApiParam(value = "email ID", required = true) @PathVariable("id") Long id) {
-        try {
-            return ResponseEntity.ok(toEmail(emailRepository.findOne(id)));
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(toEmail(emailRepository.findOne(id)));
+    }
+
+    /**
+     * Check if a template exist
+     *
+     * @param emailPrepared email prepared
+     */
+    private void templateExist(EmailPrepared emailPrepared) {
+
+        //TODO: Vérifier l'id
+        String url = emailPrepared.getTemplate();
+        Long id = Long.valueOf(url.substring(url.lastIndexOf('/') + 1));
+        TemplateEntity templateEntity = templateRepository.findOne(id);
+
+        if (templateRepository.findOne(id) == null) {
+            emailPrepared.setTemplate("");
         }
     }
 
     /**
      * Transform an email to an email entity
-     * @param email
-     * @return
+     *
+     * @param email email
+     * @return an email entity
      */
     private EmailEntity toEmailEntity(Email email) {
         EmailEntity entity = new EmailEntity();
+
         entity.setSender(email.getSender());
         entity.setRecipients(email.getRecipients());
         entity.setCarbonCopy(email.getCarbonCopy());
         entity.setBlindCarbonCopy(email.getBlindCarbonCopy());
         entity.setSubject(email.getSubject());
-        entity.setParameters(toParametersEntities(email.getParameters()));
+        entity.setBody(email.getBody());
+
         return entity;
     }
 
     /**
      * Transform an email entity to an email
-     * @param entity
-     * @return
+     *
+     * @param entity email entity
+     * @return an email
      */
     private Email toEmail(EmailEntity entity) {
         Email email = new Email();
+
         email.setSender(entity.getSender());
         email.setRecipients(entity.getRecipients());
         email.setCarbonCopy(entity.getCarbonCopy());
         email.setBlindCarbonCopy(entity.getBlindCarbonCopy());
         email.setSubject(entity.getSubject());
-        email.setParameters(toParameters(entity.getParameters()));
+        email.setBody(entity.getBody());
+
         return email;
     }
 
     /**
-     * Tranform a list of parameters to a list of parameters entities
-     * @param parameters
-     * @return
+     * Transform an email prepared to an email entity
+     *
+     * @param emailPrepared email prepared
+     * @return an email entity
      */
-    private List<ParameterEntity> toParametersEntities(List<Parameter> parameters) {
-        List<ParameterEntity> entities = new ArrayList<>();
+    private EmailEntity toEmailEntity(EmailPrepared emailPrepared) {
+        EmailEntity entity = new EmailEntity();
 
-        for (Parameter parameter : parameters) {
-            entities.add(toParameterEntity(parameter));
-        }
+        entity.setSender(emailPrepared.getSender());
+        entity.setRecipients(emailPrepared.getRecipients());
+        entity.setCarbonCopy(emailPrepared.getCarbonCopy());
+        entity.setBlindCarbonCopy(emailPrepared.getBlindCarbonCopy());
+        entity.setSubject(emailPrepared.getSubject());
 
-        return entities;
-    }
+        //TODO: Vérifier l'id
+        // Get body's email prepared
 
-    /**
-     * Tranform a list of parameters entities to a list of parameters
-     * @param entities
-     * @return
-     */
-    private List<Parameter> toParameters(List<ParameterEntity> entities) {
-        List<Parameter> parameters = new ArrayList<>();
+        templateExist(emailPrepared);
+        String url = emailPrepared.getTemplate();
+        Long id = Long.valueOf(url.substring(url.lastIndexOf('/') + 1));
+        TemplateEntity templateEntity = templateRepository.findOne(id);
+        String body = templateEntity.getBody();
 
-        for (ParameterEntity parameterEntity : entities) {
-            parameters.add(toParameter(parameterEntity));
-        }
+        // Insert values in place of parameters
+        //TODO: Insérer les valeurs des paramètres à la place des paramètres
 
-        return parameters;
-    }
+        // Set body's email to send
+        entity.setBody(body);
 
-    /**
-     * Tranform a parameter entity to a parameter
-     * @param parameter
-     * @return
-     */
-    private ParameterEntity toParameterEntity(Parameter parameter) {
-        ParameterEntity entity = new ParameterEntity();
-        entity.setKey(parameter.getKey());
-        entity.setValue(parameter.getValue());
         return entity;
     }
 
     /**
-     * Tranform a parameter to a parameter entity
-     * @param entity
-     * @return
+     * Transform an email prepared to an email
+     *
+     * @param emailPrepared email prepared
+     * @return an email
      */
-    private Parameter toParameter(ParameterEntity entity) {
-        Parameter parameter = new Parameter();
-        parameter.setKey(entity.getKey());
-        parameter.setValue(entity.getValue());
-        return parameter;
+    private Email toEmail(EmailPrepared emailPrepared) {
+        Email email = new Email();
+
+        email.setSender(emailPrepared.getSender());
+        email.setRecipients(emailPrepared.getRecipients());
+        email.setCarbonCopy(emailPrepared.getCarbonCopy());
+        email.setBlindCarbonCopy(emailPrepared.getBlindCarbonCopy());
+        email.setSubject(emailPrepared.getSubject());
+
+        //TODO: Vérifier l'id
+        // Get body's email prepared
+        String url = emailPrepared.getTemplate();
+        Long id = Long.valueOf(url.substring(url.lastIndexOf('/') + 1));
+        TemplateEntity templateEntity = templateRepository.findOne(id);
+        String body = templateEntity.getBody();
+
+        // Insert values in place of parameters
+        //TODO: Insérer les valeurs des paramètres à la place des paramètres
+
+        // Set body's email to send
+        email.setBody(body);
+
+        return email;
     }
 }
