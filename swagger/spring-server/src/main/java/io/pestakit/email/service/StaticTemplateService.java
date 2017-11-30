@@ -8,6 +8,7 @@ import org.thymeleaf.messageresolver.IMessageResolver;
 import org.thymeleaf.messageresolver.StandardMessageResolver;
 import org.thymeleaf.resourceresolver.IResourceResolver;
 import org.thymeleaf.spring4.SpringTemplateEngine;
+import org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.templatemode.StandardTemplateModeHandlers;
 import org.thymeleaf.templateresolver.ITemplateResolutionValidity;
 import org.thymeleaf.templateresolver.ITemplateResolver;
@@ -26,7 +27,9 @@ import java.nio.charset.StandardCharsets;
  */
 @Service
 public class StaticTemplateService {
+
     public String processTemplateCode(final String code, final IContext context) {
+
         Validate.notNull(code, "Code must be non-null");
         Validate.notNull(context, "Context must be non-null");
         String templateMode = StandardTemplateModeHandlers.HTML5.getTemplateModeName();
@@ -36,6 +39,8 @@ public class StaticTemplateService {
         templateEngine.setMessageResolver(messageResolver);
         templateEngine.setTemplateResolver(templateResolver);
         templateEngine.initialize();
+        System.out.println(code);
+        System.out.println(context.getVariables());
         return templateEngine.process("dummy", context);
     }
 }

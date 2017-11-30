@@ -10,6 +10,7 @@ import io.pestakit.email.repositories.EmailRepository;
 import io.pestakit.email.repositories.TemplateRepository;
 import io.pestakit.email.service.EmailService;
 import io.pestakit.email.service.MailContentBuilder;
+import io.pestakit.email.service.StaticTemplateService;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.thymeleaf.context.Context;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -45,8 +47,13 @@ public class EmailApiController implements EmailsApi {
     @Autowired
     private EmailService emailService;
 
+    // sera surement supprimer
     @Autowired
     MailContentBuilder mailContentBuilder;
+
+
+    @Autowired
+    protected StaticTemplateService staticTemplateService;
 
 
     /**
@@ -182,22 +189,40 @@ public class EmailApiController implements EmailsApi {
         //TODO: Vérifier l'id
         // Get body's email prepared
 
-        /*
+
         templateExist(emailPrepared);
         String url = emailPrepared.getTemplate();
         Long id = Long.valueOf(url.substring(url.lastIndexOf('/') + 1));
         TemplateEntity templateEntity = templateRepository.findOne(id);
-        String body = templateEntity.getBody();
-        */
+        String templateBody = templateEntity.getBody();
+
 
         //todo check if parameters are Ok with this template
         //TODO: Insérer les valeurs des paramètres
 
 
         List<Parameter> parametersList = emailPrepared.getParameters();
-        // utilise template du fs
-        String body = mailContentBuilder.buildContent(parametersList, "test");
+
         // Set body's email to send
+
+
+        // build content
+        Context context = new Context();
+
+        context.setVariable("name", "jojo remondo");
+        System.out.println(context.getVariables());
+
+
+        String body = staticTemplateService.processTemplateCode("<div th:text=\"${name}\">Hi</div> World", context);
+
+
+
+
+        // todo corriger static template service pour avoir n importe quel template
+        //String body = mailContentBuilder.buildContent(parametersList, templateBody);
+
+
+        System.out.println("body: " + body);
 
 
 
