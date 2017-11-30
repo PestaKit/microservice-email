@@ -1,5 +1,6 @@
 package io.pestakit.email.api.spec.steps;
 
+
 import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
@@ -12,7 +13,9 @@ import io.pestakit.email.api.dto.Email;
 import io.pestakit.email.api.dto.Parameter;
 import io.pestakit.email.api.dto.Template;
 import io.pestakit.email.api.spec.helpers.Environment;
+import org.subethamail.wiser.Wiser;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +26,11 @@ public class EmailsSteps {
 
     private Template template;
     private Email email;
+    int lastNbEmailsInAPI;
+    int newNbEmailsInAPI;
+    List<String> copy = new ArrayList<>();
+    List<String> recipients = new ArrayList<>();
+    private Wiser wiser;
 
     private Environment environment;
     private DefaultApi api;
@@ -32,7 +40,9 @@ public class EmailsSteps {
     private boolean lastApiCallThrewException;
     private int lastStatusCode;
 
-    public EmailsSteps(Environment environment) {
+    public EmailsSteps(Environment environment) throws IOException {
+
+        this.wiser = new Wiser();
         this.environment = environment;
         this.api = environment.getApi();
     }
@@ -54,14 +64,14 @@ public class EmailsSteps {
 
     @And("^I set recipients$")
     public void iSetRecipientS() throws Throwable {
-        List<String> recipients = new ArrayList<>();
+
         recipients.add("tano.iannetta@heig-vd.ch");
         email.setRecipients(recipients);
     }
 
     @And("^I set a blindCarbonCopy$")
     public void iSetABlindCarbonCopy() throws Throwable {
-        List<String> copy = new ArrayList<>();
+
         copy.add("loan.lassale@heig-vd.ch");
         email.setBlindCarbonCopy(copy);
     }
@@ -71,7 +81,7 @@ public class EmailsSteps {
         email.setSubject("test cucumber");
     }
 
-    @And("^I set parameters$")
+    @And("^I set template with parameters$")
     public void iSetParameters() throws Throwable {
         template = new Template();
         template.setBody("Bonjour @Title @FirstName @LastName, comment allez vous ?");
@@ -98,6 +108,11 @@ public class EmailsSteps {
 
     @When("^I POST it to the /email endpoint$")
     public void iPOSTItToTheEmailEndpoint() throws Throwable {
+
+        wiser.setPort(3030);
+        wiser.setHostname("localhost");
+        wiser.start();
+        lastNbEmailsInAPI = api.getEmails().size();
         try {
             lastApiResponse = api.createEmailWithHttpInfo(email);
             lastApiCallThrewException = false;
@@ -109,6 +124,7 @@ public class EmailsSteps {
             lastApiException = e;
             lastStatusCode = lastApiException.getCode();
         }
+        wiser.stop();
     }
 
     @Then("^I receive (\\d+) status code$")
@@ -118,13 +134,50 @@ public class EmailsSteps {
 
     @And("^The recipient receive an email$")
     public void theRecipientReceiveAnEmail() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+        assertEquals(wiser.getMessages().size(), copy.size() + recipients.size());
     }
 
     @And("^I have sent an email$")
     public void iHaveSentAnEmail() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+        newNbEmailsInAPI = api.getEmails().size();
+        assertEquals(copy.size() + recipients.size(), newNbEmailsInAPI - lastNbEmailsInAPI);
     }
+
+
+    @Given("^I send to an invalid mail recipient$")
+    public void iSendToAnInvalidMailRecipient() throws Throwable {
+        email = new Email();
+        recipients.add("I'm a fake adresse");
+        email.setRecipients(recipients);
+
+        wiser.setPort(3030);
+        wiser.setHostname("localhost");
+        wiser.start();
+        lastNbEmailsInAPI = api.getEmails().size();
+        try {
+            lastApiResponse = api.createEmailWithHttpInfo(email);
+            lastApiCallThrewException = false;
+            lastApiException = null;
+            lastStatusCode = lastApiResponse.getStatusCode();
+        } catch (ApiException e) {
+            lastApiCallThrewException = true;
+            lastApiResponse = null;
+            lastApiException = e;
+            lastStatusCode = lastApiException.getCode();
+        }
+        wiser.stop();
+    }
+
+
+    @Then("^I get a (\\d+) status code$")
+    public void iGetAStatusCode(int arg0) throws Throwable {
+        assertEquals(arg0, lastStatusCode);
+    }
+
+    @And("^No email is send$")
+    public void noEmailIsSend() throws Throwable {
+        assertEquals(wiser.getMessages().size(), 0);
+    }
+
+
 }
