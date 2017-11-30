@@ -5,6 +5,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * author: Loan Lassalle
+ */
 @Entity
 public class TemplateEntity implements Serializable {
 
@@ -16,8 +19,7 @@ public class TemplateEntity implements Serializable {
     private String name;
 
     @ElementCollection
-    @OneToMany(cascade = {CascadeType.ALL})
-    private List<TagEntity> tags;
+    private List<String> tags;
 
     @ElementCollection
     private List<String> parameters;
@@ -44,15 +46,15 @@ public class TemplateEntity implements Serializable {
         this.name = name;
     }
 
-    public List<TagEntity> getTags() {
+    public List<String> getTags() {
         return tags;
     }
 
-    public void setTags(List<TagEntity> tags) {
+    public void setTags(List<String> tags) {
         this.tags = tags;
     }
 
-    public void addTag(TagEntity tag) {
+    public void addTag(String tag) {
         if (tags == null) {
             tags = new ArrayList<>();
         }
@@ -60,7 +62,7 @@ public class TemplateEntity implements Serializable {
         tags.add(tag);
     }
 
-    public void removeTag(TagEntity tag) {
+    public void removeTag(String tag) {
         if (tags != null) {
             tags.remove(tag);
         }

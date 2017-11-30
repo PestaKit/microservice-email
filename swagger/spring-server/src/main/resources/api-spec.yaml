@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   version: '0.1.0'
   title: Email API
-  description: An API recipient handle templates and send an email sender a template
+  description: An API handle templates and send an email using a template
 host: localhost:8080
 basePath: /api
 schemes:
@@ -166,7 +166,7 @@ paths:
           description: Create an email
           required: true
           schema:
-            $ref: '#/definitions/Email'
+            $ref: '#/definitions/EmailPrepared'
       responses:
         '201':
           description: Email created
@@ -211,7 +211,7 @@ definitions:
         type: string
       name:
         type: string
-      templatesUrl:
+      templates:
         type: array
         items:
           type: string
@@ -226,13 +226,39 @@ definitions:
       tags:
         type: array
         items:
-          $ref: '#/definitions/Tag'
+          type: string
       parameters:
         type: array
         items:
           type: string
       body:
         type: string
+
+  EmailPrepared:
+    type: object
+    properties:
+      sender:
+        type: string
+      recipients:
+        type: array
+        items:
+          type: string
+      carbonCopy:
+        type: array
+        items:
+          type: string
+      blindCarbonCopy:
+        type: array
+        items:
+          type: string
+      subject:
+        type: string
+      template:
+        type: string
+      parameters:
+        type: array
+        items:
+          $ref: '#/definitions/Parameter'
 
   Email:
     type: object
@@ -253,12 +279,8 @@ definitions:
           type: string
       subject:
         type: string
-      templateUrl:
+      body:
         type: string
-      parameters:
-        type: array
-        items:
-          $ref: '#/definitions/Parameter'
 
   Parameter:
     type: object

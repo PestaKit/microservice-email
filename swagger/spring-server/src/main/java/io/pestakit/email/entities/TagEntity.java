@@ -5,6 +5,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * author: Loan Lassalle
+ */
 @Entity
 public class TagEntity implements Serializable {
 
@@ -16,7 +19,7 @@ public class TagEntity implements Serializable {
     private String name;
 
     @ElementCollection
-    private List<String> templatesUrl;
+    private List<String> templates;
 
     public long getId() {
         return id;
@@ -38,25 +41,25 @@ public class TagEntity implements Serializable {
         this.name = name;
     }
 
-    public List<String> getTemplatesUrl() {
-        return templatesUrl;
+    public List<String> getTemplates() {
+        return templates;
     }
 
-    public void setTemplatesUrl(List<String> templatesUrl) {
-        this.templatesUrl = templatesUrl;
+    public void setTemplates(List<String> templates) {
+        this.templates = templates;
     }
 
-    public void addTemplateUrl(String templateUrl) {
-        if (templatesUrl == null) {
-            templatesUrl = new ArrayList<>();
+    public void addTemplate(String template) {
+        if (templates == null) {
+            templates = new ArrayList<>();
         }
 
-        templatesUrl.add(templateUrl);
+        templates.add(template);
     }
 
-    public void removeTemplateUrl(String templateUrl) {
-        if (templatesUrl != null) {
-            templatesUrl.remove(templateUrl);
+    public void removeTemplate(String template) {
+        if (templates != null) {
+            templates.remove(template);
         }
     }
 }

@@ -1,8 +1,6 @@
 package io.pestakit.email.service;
 
-import io.pestakit.email.api.model.Email;
 import io.pestakit.email.entities.EmailEntity;
-import org.springframework.mail.MailMessage;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Component;
 
@@ -42,18 +40,6 @@ public class TemplateServiceImp implements TemplateService {
         message.setBcc(JsonRetrieved.getBlindCarbonCopy()
                 .toArray(new String[JsonRetrieved.getBlindCarbonCopy().size()]));
         message.setSubject(JsonRetrieved.getSubject());
-
-        // todo inject parameters
-
-
-
-
-
-
-        /*for(int i = 0; i < JsonRetrieved.getParameters().size();i++) {
-
-            message.setText(JsonRetrieved.getParameters().get(i).getValue());
-        }*/
 
 
 

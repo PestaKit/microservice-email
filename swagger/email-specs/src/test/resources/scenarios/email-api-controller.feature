@@ -9,14 +9,15 @@ Feature: Spring api controller email
     And I set recipients
     And I set a blindCarbonCopy
     And I set a subject
-    #template + parameters
-    And I set parameters
+    And I set template with parameters
     When I POST it to the /email endpoint
     Then I receive 201 status code
     And The recipient receive an email
     And I have sent an email
 
-  Scenario: send an email
-    Given I write an invalid mail recipient
+  Scenario: send an invalid email
+    Given I send to an invalid mail recipient
+    Then I get a 422 status code
+    And No email is send
 
 
