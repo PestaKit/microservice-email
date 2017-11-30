@@ -45,18 +45,39 @@ public class EmailApiController implements EmailsApi {
      */
     public ResponseEntity<Object> createEmail(@ApiParam(value = "", required = true) @Valid @RequestBody Email email) {
 
-            EmailEntity entity = toEmailEntity(email);
-            emailRepository.save(entity);
 
-        EmailEntity emailEntity = toEmailEntity(email);
-        emailRepository.save(emailEntity);
+        // get email
+        EmailEntity entity = toEmailEntity(email);
 
+        //todo
+        // process email with template
+        // 1 -> recupe template
+        // 2 -> injecter valeur
+
+
+
+
+
+
+
+        // 3 -> construire email
+
+
+
+        // 4
+
+
+        // save email
+        emailRepository.save(entity);
         URI location = ServletUriComponentsBuilder
                     .fromCurrentRequest().path("/{id}")
                     .buildAndExpand(entity.getId()).toUri();
 
 
-        //todo demande d'envoie et instanciation du tamplate
+
+
+
+        // 5 send email
         // send the email
         emailService.sendSimpleMessage(email); // email sera créé depuis le service de template
 

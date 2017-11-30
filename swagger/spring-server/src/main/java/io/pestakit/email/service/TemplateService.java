@@ -7,13 +7,15 @@ import org.springframework.mail.SimpleMailMessage;
 import java.util.Map;
 
 /**
- *
+ * This interface give methods to prepare an email
+ * @author Wojchiech Myszkorowski and Tano Iannetta
  */
 public interface TemplateService {
+
     /**
-     *
-     * @param email
-     * @return
+     * Take a email entity and inject values in his template
+     * @param email email sent by the POST method
+     * @return email ready to be send
      */
     SimpleMailMessage createTemplate(EmailEntity email);
 }
