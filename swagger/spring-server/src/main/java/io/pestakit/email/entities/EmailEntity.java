@@ -28,6 +28,7 @@ public class EmailEntity implements Serializable {
 
     private String subject;
 
+    @Column(length=10000)
     private String body;
 
     public long getId() {

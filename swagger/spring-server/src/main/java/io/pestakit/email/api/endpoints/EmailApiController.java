@@ -3,11 +3,13 @@ package io.pestakit.email.api.endpoints;
 import io.pestakit.email.api.EmailsApi;
 import io.pestakit.email.api.model.Email;
 import io.pestakit.email.api.model.EmailPrepared;
+import io.pestakit.email.api.model.Parameter;
 import io.pestakit.email.entities.EmailEntity;
 import io.pestakit.email.entities.TemplateEntity;
 import io.pestakit.email.repositories.EmailRepository;
 import io.pestakit.email.repositories.TemplateRepository;
 import io.pestakit.email.service.EmailService;
+import io.pestakit.email.service.MailContentBuilder;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +44,10 @@ public class EmailApiController implements EmailsApi {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    MailContentBuilder mailContentBuilder;
+
 
     /**
      * Process POST /emails request
@@ -152,7 +158,6 @@ public class EmailApiController implements EmailsApi {
         email.setBlindCarbonCopy(entity.getBlindCarbonCopy());
         email.setSubject(entity.getSubject());
         email.setBody(entity.getBody());
-
         return email;
     }
 
@@ -165,6 +170,7 @@ public class EmailApiController implements EmailsApi {
      * @return an email entity
      */
     private EmailEntity toEmailEntity(EmailPrepared emailPrepared) {
+
         EmailEntity entity = new EmailEntity();
 
         entity.setSender(emailPrepared.getSender());
@@ -176,16 +182,26 @@ public class EmailApiController implements EmailsApi {
         //TODO: Vérifier l'id
         // Get body's email prepared
 
+        /*
         templateExist(emailPrepared);
         String url = emailPrepared.getTemplate();
         Long id = Long.valueOf(url.substring(url.lastIndexOf('/') + 1));
         TemplateEntity templateEntity = templateRepository.findOne(id);
         String body = templateEntity.getBody();
+        */
 
-        // Insert values in place of parameters
-        //TODO: Insérer les valeurs des paramètres à la place des paramètres
+        //todo check if parameters are Ok with this template
+        //TODO: Insérer les valeurs des paramètres
 
+
+        List<Parameter> parametersList = emailPrepared.getParameters();
+        // utilise template du fs
+        String body = mailContentBuilder.buildContent(parametersList, "test");
         // Set body's email to send
+
+
+
+
         entity.setBody(body);
 
         return entity;
