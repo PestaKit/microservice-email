@@ -21,14 +21,17 @@ import java.util.List;
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-07-26T19:36:34.802Z")
 
 /**
- *
- *
+ * TODO: Description
  * author: Loan Lassalle
  */
 @Controller
 public class TagApiController implements TagsApi {
 
-    //TODO: Gérer les exceptions
+//     TODO: PUT
+//     TODO: PATCH
+//     TODO: Exceptions des actions CRUD
+//     TODO: Retour des fonctions
+//     TODO: JavaDoc et commentaires
 
     @Autowired
     private TagRepository tagRepository;
@@ -40,23 +43,22 @@ public class TagApiController implements TagsApi {
      * Process POST /tags request
      * Create a tag
      *
-     * @param tag to create
+     * @param tag tag to create
      * @return TODO
      */
     @Override
     public ResponseEntity<Object> createTag(@ApiParam(value = "Create a tag", required = true) @RequestBody Tag tag) {
-        TagEntity entity = toTagEntity(tag);
 
-        templatesExist(entity);
+        // Create tag in database
+        TagEntity entity = toTagEntity(tag);
         tagRepository.save(entity);
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(entity.getId())
                 .toUri();
 
-        // Update tag's URL
+        // Update tag's URL in database
         entity.setUrl(location.toString());
         tagRepository.save(entity);
 
@@ -73,6 +75,7 @@ public class TagApiController implements TagsApi {
     public ResponseEntity<List<Tag>> getTags() {
         List<Tag> tags = new ArrayList<>();
 
+        // Get all tags in database
         for (TagEntity entity : tagRepository.findAll()) {
             tags.add(toTag(entity));
         }
@@ -89,7 +92,15 @@ public class TagApiController implements TagsApi {
      */
     @Override
     public ResponseEntity<Tag> getTag(@ApiParam(value = "tag ID", required = true) @PathVariable("id") Long id) {
-        return ResponseEntity.ok(toTag(tagRepository.findOne(id)));
+
+        // Get tag in database
+        Tag tag = toTag(tagRepository.findOne(id));
+
+        if (tag != null) {
+            return ResponseEntity.ok(tag);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     /**
@@ -99,29 +110,45 @@ public class TagApiController implements TagsApi {
      * @param id tag ID
      * @return TODO
      */
-//    @Override
-//    public ResponseEntity<Void> deleteTag(Long id) {
-//        TagEntity entity = tagRepository.findOne(id);
-//
-//        if (entity == null) {
-//            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
-//        } else {
-//            tagRepository.delete(entity.getId());
-//            return new ResponseEntity<Void>(HttpStatus.OK);
-//        }
-//    }
+    @Override
+    public ResponseEntity<Void> deleteTag(@ApiParam(value = "tag ID", required = true) @PathVariable("id") Long id) {
+
+        // Get tag in database
+        TagEntity entity = tagRepository.findOne(id);
+
+        // Delete tag in database
+        if (entity != null) {
+            tagRepository.delete(entity.getId());
+
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     /**
      * Check if tag's templates exist
      *
-     * @param entity tag entity
+     * @param templates tag's templates
      */
-    private void templatesExist(TagEntity entity) {
-        for (Iterator<String> iterator = entity.getTemplates().iterator(); iterator.hasNext(); ) {
-            if (templateRepository.findOne(entity.getId()) == null) {
+    private List<String> templatesIfExist(List<String> templates) {
+        for (Iterator<String> iterator = templates.iterator(); iterator.hasNext(); ) {
+            String template = iterator.next();
+
+            try {
+//                 TODO: Vérifier si l'URL est bien de la forme api/templates/id
+                Long id = Long.valueOf(template.substring(template.lastIndexOf('/') + 1));
+
+                // Get tag in database
+                if (templateRepository.findOne(id) == null) {
+                    iterator.remove();
+                }
+            } catch (NumberFormatException e) {
                 iterator.remove();
             }
         }
+
+        return templates;
     }
 
     /**
@@ -135,7 +162,7 @@ public class TagApiController implements TagsApi {
 
         entity.setName(tag.getName());
         entity.setUrl(tag.getUrl());
-        entity.setTemplates(tag.getTemplates());
+        entity.setTemplates(templatesIfExist(tag.getTemplates()));
 
         return entity;
     }
@@ -151,7 +178,7 @@ public class TagApiController implements TagsApi {
 
         tag.setName(entity.getName());
         tag.setUrl(entity.getUrl());
-        tag.setTemplates(entity.getTemplates());
+        tag.setTemplates(templatesIfExist(entity.getTemplates()));
 
         return tag;
     }

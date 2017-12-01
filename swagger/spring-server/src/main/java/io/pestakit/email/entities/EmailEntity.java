@@ -6,10 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * TODO: Description
  * author: Loan Lassalle
  */
 @Entity
 public class EmailEntity implements Serializable {
+
+    // TODO: Ajouter un attribut URL
+    // TODO: JavaDoc et commentaires
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +32,7 @@ public class EmailEntity implements Serializable {
 
     private String subject;
 
+    // TODO: Voir pour une gestion dynamique. class Text ?
     @Column(length=10000)
     private String body;
 
