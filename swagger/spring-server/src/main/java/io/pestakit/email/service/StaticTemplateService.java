@@ -21,6 +21,8 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 /**
+ * This code is used to use template given as a String
+ * It was found in the following thymeleaf's repository
  * Ref: https://github.com/thymeleaf/thymeleaf-itutorial/blob/2.1-master/src/test/java/org/thymeleaf/tools/memoryexecutor/StaticTemplateExecutorTest.java
  * @author anandchakru
  *
@@ -39,8 +41,6 @@ public class StaticTemplateService {
         templateEngine.setMessageResolver(messageResolver);
         templateEngine.setTemplateResolver(templateResolver);
         templateEngine.initialize();
-        System.out.println(code);
-        System.out.println(context.getVariables());
         return templateEngine.process("dummy", context);
     }
 }

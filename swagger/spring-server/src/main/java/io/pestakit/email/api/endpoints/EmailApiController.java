@@ -224,12 +224,12 @@ public class EmailApiController implements EmailsApi {
         System.out.println(context.getVariables());
 
 
-        String body = staticTemplateService.processTemplateCode("<p th:text=\"${name}\">Hi</p> World", context);
+        String body = staticTemplateService.processTemplateCode("<span th:text=\"${name}\">name</span>", context);
 
 
+        System.out.println(templateBody);
 
-
-        // todo corriger static template service pour avoir n importe quel template
+        // todo corriger static template service pour avoir n importe quel template, si possible
         //String body = mailContentBuilder.buildContent(parametersList, templateBody);
 
 

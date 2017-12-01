@@ -9,7 +9,6 @@ import org.thymeleaf.context.Context;
 import java.util.List;
 
 
-//https://stackoverflow.com/questions/39062780/process-string-templates-with-thymeleaf-3
 /**
  * This class is used to fill emails template
  * @author Tano Iannetta and Wojciech Myszkorowski
@@ -46,9 +45,9 @@ public class MailContentBuilder {
         Context context = new Context();
 
         for (Parameter p: parameters) {
-          //  context.setVariable(p.getKey(), p.getValue());
+            context.setVariable(p.getKey(), p.getValue());
         }
-        context.setVariable("name", "jojo remondo");
+        //context.setVariable("name", "jojo remondo");
         System.out.println(context.getVariables());
 
 

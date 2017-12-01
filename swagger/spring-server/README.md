@@ -16,3 +16,6 @@ You can view the api documentation in swagger-ui by pointing to
 http://localhost:8080/  
 
 Change default port value in application.properties
+
+
+We use thymeleaf template engine to manage the templates. Therefor, when writing a template you have to follow the thymeleaf synthax. [thymeleaftutorial](http://www.thymeleaf.org/doc/tutorials/2.1/usingthymeleaf.html)
