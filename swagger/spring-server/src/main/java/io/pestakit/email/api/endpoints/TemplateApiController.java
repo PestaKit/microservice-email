@@ -21,42 +21,44 @@ import java.util.List;
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-07-26T19:36:34.802Z")
 
 /**
- *
- *
+ * TODO: Description
  * author: Loan Lassalle
  */
 @Controller
 public class TemplateApiController implements TemplatesApi {
 
-    //TODO: Gérer les exceptions
+//     TODO: PUT
+//     TODO: PATCH
+//     TODO: Exceptions des actions CRUD
+//     TODO: Retour des fonctions
+//     TODO: JavaDoc et commentaires
 
     @Autowired
-    TagRepository tagRepository;
+    private TagRepository tagRepository;
 
     @Autowired
-    TemplateRepository templateRepository;
+    private TemplateRepository templateRepository;
 
     /**
      * Process POST /templates request
-     * Create a Template
+     * Create a template
      *
      * @param template template to create
      * @return TODO
      */
     @Override
     public ResponseEntity<Object> createTemplate(@ApiParam(value = "Create a template", required = true) @RequestBody Template template) {
-        TemplateEntity entity = toTemplateEntity(template);
 
-        tagsExist(entity);
+        // Create template in database
+        TemplateEntity entity = toTemplateEntity(template);
         templateRepository.save(entity);
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(entity.getId())
                 .toUri();
 
-        // Update template's URL
+        // Update template's URL in database
         entity.setUrl(location.toString());
         templateRepository.save(entity);
 
@@ -73,6 +75,7 @@ public class TemplateApiController implements TemplatesApi {
     public ResponseEntity<List<Template>> getTemplates() {
         List<Template> templates = new ArrayList<>();
 
+        // Get all template in database
         for (TemplateEntity entity : templateRepository.findAll()) {
             templates.add(toTemplate(entity));
         }
@@ -89,24 +92,68 @@ public class TemplateApiController implements TemplatesApi {
      */
     @Override
     public ResponseEntity<Template> getTemplate(@ApiParam(value = "template ID", required = true) @PathVariable("id") Long id) {
-        return ResponseEntity.ok(toTemplate(templateRepository.findOne(id)));
+
+        // Get template in database
+        Template template = toTemplate(templateRepository.findOne(id));
+
+        if (template != null) {
+            return ResponseEntity.ok(template);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
+     * Process DELETE /templates/{id}?id= request
+     * Delete a template
+     *
+     * @param id template ID
+     * @return TODO
+     */
+    @Override
+    public ResponseEntity<Void> deleteTemplate(@ApiParam(value = "template ID", required = true) @PathVariable("id") Long id) {
+
+        // Get template in database
+        TemplateEntity entity = templateRepository.findOne(id);
+
+        // Delete template in database
+        if (entity != null) {
+            templateRepository.delete(entity.getId());
+
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     /**
      * Check if template's tags exist
      *
-     * @param entity template entity
+     * @param tags template's tags
      */
-    private void tagsExist(TemplateEntity entity) {
-        for (Iterator<String> iterator = entity.getTags().iterator(); iterator.hasNext(); ) {
-            if (tagRepository.findOne(entity.getId()) == null) {
+    private List<String> tagsIfExist(List<String> tags) {
+        for (Iterator<String> iterator = tags.iterator(); iterator.hasNext(); ) {
+            String tag = iterator.next();
+
+            try {
+//                 TODO: Vérifier si l'URL est bien de la forme api/tags/id
+                Long id = Long.valueOf(tag.substring(tag.lastIndexOf('/') + 1));
+
+                // Get template in database
+                if (tagRepository.findOne(id) == null) {
+                    iterator.remove();
+                }
+            } catch (NumberFormatException e) {
                 iterator.remove();
             }
         }
+
+        return tags;
     }
 
     /**
      * Transform a template to template entity
+     *
      * @param template template
      * @return a template entity
      */
@@ -115,7 +162,7 @@ public class TemplateApiController implements TemplatesApi {
 
         entity.setUrl(template.getUrl());
         entity.setName(template.getName());
-        entity.setTags(template.getTags());
+        entity.setTags(tagsIfExist(template.getTags()));
         entity.setParameters(template.getParameters());
         entity.setBody(template.getBody());
 
@@ -124,6 +171,7 @@ public class TemplateApiController implements TemplatesApi {
 
     /**
      * Transform a template entity to template
+     *
      * @param entity template entity
      * @return a template
      */
@@ -132,7 +180,7 @@ public class TemplateApiController implements TemplatesApi {
 
         template.setUrl(entity.getUrl());
         template.setName(entity.getName());
-        template.setTags(entity.getTags());
+        template.setTags(tagsIfExist(entity.getTags()));
         template.setParameters(entity.getParameters());
         template.setBody(entity.getBody());
 

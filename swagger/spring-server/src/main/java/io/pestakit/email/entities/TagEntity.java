@@ -6,10 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * TODO: Description
  * author: Loan Lassalle
  */
 @Entity
 public class TagEntity implements Serializable {
+
+    // TODO: JavaDoc et commentaires
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

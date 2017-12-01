@@ -34,7 +34,11 @@ import java.util.List;
 @Controller
 public class EmailApiController implements EmailsApi {
 
-    //TODO: Gérer les exceptions
+//     TODO: PUT
+//     TODO: PATCH
+//     TODO: Exceptions des actions CRUD
+//     TODO: Retour des fonctions
+//     TODO: JavaDoc et commentaires
 
     @Autowired
     private EmailRepository emailRepository;
@@ -46,8 +50,7 @@ public class EmailApiController implements EmailsApi {
     private EmailService emailService;
 
     @Autowired
-    MailContentBuilder mailContentBuilder;
-
+    private MailContentBuilder mailContentBuilder;
 
     /**
      * Process POST /emails request
@@ -59,12 +62,11 @@ public class EmailApiController implements EmailsApi {
     @Override
     public ResponseEntity<Object> createEmail(@ApiParam(value = "Create an email", required = true) @RequestBody EmailPrepared emailPrepared) {
 
-
-        // prepare an email with headers, template and parameters
+        // Create email in database
+        // Prepare an email with headers, template and parameters
         EmailEntity entity = toEmailEntity(emailPrepared);
-
-        // save email
         emailRepository.save(entity);
+
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
@@ -87,6 +89,7 @@ public class EmailApiController implements EmailsApi {
     public ResponseEntity<List<Email>> getEmails() {
         List<Email> emails = new ArrayList<>();
 
+        // Get all emails in database
         for (EmailEntity entity : emailRepository.findAll()) {
             emails.add(toEmail(entity));
         }
@@ -103,7 +106,15 @@ public class EmailApiController implements EmailsApi {
      */
     @Override
     public ResponseEntity<Email> getEmail(@ApiParam(value = "email ID", required = true) @PathVariable("id") Long id) {
-        return ResponseEntity.ok(toEmail(emailRepository.findOne(id)));
+
+        // Get email in database
+        Email email = toEmail(emailRepository.findOne(id));
+
+        if (email != null) {
+            return ResponseEntity.ok(email);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     /**
@@ -114,7 +125,7 @@ public class EmailApiController implements EmailsApi {
      */
     private void templateExist(EmailPrepared emailPrepared) {
 
-        //TODO: Vérifier l'id
+//        TODO: Vérifier l'id
         String url = emailPrepared.getTemplate();
         Long id = Long.valueOf(url.substring(url.lastIndexOf('/') + 1));
         TemplateEntity templateEntity = templateRepository.findOne(id);
@@ -179,7 +190,7 @@ public class EmailApiController implements EmailsApi {
         entity.setBlindCarbonCopy(emailPrepared.getBlindCarbonCopy());
         entity.setSubject(emailPrepared.getSubject());
 
-        //TODO: Vérifier l'id
+//        TODO: Vérifier l'id
         // Get body's email prepared
 
         /*
@@ -190,8 +201,8 @@ public class EmailApiController implements EmailsApi {
         String body = templateEntity.getBody();
         */
 
-        //todo check if parameters are Ok with this template
-        //TODO: Insérer les valeurs des paramètres
+//        todo check if parameters are Ok with this template
+//        TODO: Insérer les valeurs des paramètres
 
 
         List<Parameter> parametersList = emailPrepared.getParameters();
@@ -222,7 +233,7 @@ public class EmailApiController implements EmailsApi {
         email.setBlindCarbonCopy(emailPrepared.getBlindCarbonCopy());
         email.setSubject(emailPrepared.getSubject());
 
-        //TODO: Vérifier l'id
+//        TODO: Vérifier l'id
         // Get body's email prepared
         String url = emailPrepared.getTemplate();
         Long id = Long.valueOf(url.substring(url.lastIndexOf('/') + 1));
@@ -230,7 +241,7 @@ public class EmailApiController implements EmailsApi {
         String body = templateEntity.getBody();
 
         // Insert values in place of parameters
-        //TODO: Insérer les valeurs des paramètres à la place des paramètres
+//        TODO: Insérer les valeurs des paramètres à la place des paramètres
 
         // Set body's email to send
         email.setBody(body);

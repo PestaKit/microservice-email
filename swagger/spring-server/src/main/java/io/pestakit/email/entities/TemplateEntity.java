@@ -6,10 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * TODO: Description
  * author: Loan Lassalle
  */
 @Entity
 public class TemplateEntity implements Serializable {
+
+    // TODO: JavaDoc et commentaires
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +21,7 @@ public class TemplateEntity implements Serializable {
     private String url;
     private String name;
 
+    // TODO: Voir comment utiliser une class ShortTag
     @ElementCollection
     private List<String> tags;
 
