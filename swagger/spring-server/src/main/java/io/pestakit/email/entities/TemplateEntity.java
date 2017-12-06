@@ -15,8 +15,6 @@ import java.util.List;
 @Entity
 public class TemplateEntity implements Serializable {
 
-    // TODO: JavaDoc et commentaires
-
     /**
      * Template's ID
      * Used to identify template by database

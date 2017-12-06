@@ -13,8 +13,6 @@ import java.util.List;
 @Entity
 public class TagEntity implements Serializable {
 
-    // TODO: JavaDoc et commentaires
-
     /**
      * Tag's ID
      * Used to identify tag by database
