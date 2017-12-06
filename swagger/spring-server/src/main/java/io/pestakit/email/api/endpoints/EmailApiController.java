@@ -37,8 +37,6 @@ import java.util.List;
 @Controller
 public class EmailApiController implements EmailsApi {
 
-//     TODO: PUT
-//     TODO: PATCH
 //     TODO: Exceptions des actions CRUD
 //     TODO: Retour des fonctions
 //     TODO: JavaDoc et commentaires

@@ -1,7 +1,6 @@
 package io.pestakit.email.api.spec.steps;
 
 
-import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -10,6 +9,7 @@ import io.pestakit.email.ApiException;
 import io.pestakit.email.ApiResponse;
 import io.pestakit.email.api.DefaultApi;
 import io.pestakit.email.api.dto.Email;
+import io.pestakit.email.api.dto.EmailPrepared;
 import io.pestakit.email.api.dto.Parameter;
 import io.pestakit.email.api.dto.Template;
 import io.pestakit.email.api.spec.helpers.Environment;
@@ -25,7 +25,7 @@ import static org.junit.Assert.assertNotNull;
 public class EmailsSteps {
 
     private Template template;
-    private Email email;
+    private EmailPrepared email;
     int lastNbEmailsInAPI;
     int newNbEmailsInAPI;
     List<String> copy = new ArrayList<>();
@@ -64,14 +64,12 @@ public class EmailsSteps {
 
     @And("^I set recipients$")
     public void iSetRecipientS() throws Throwable {
-
         recipients.add("tano.iannetta@heig-vd.ch");
         email.setRecipients(recipients);
     }
 
     @And("^I set a blindCarbonCopy$")
     public void iSetABlindCarbonCopy() throws Throwable {
-
         copy.add("loan.lassale@heig-vd.ch");
         email.setBlindCarbonCopy(copy);
     }
@@ -84,8 +82,8 @@ public class EmailsSteps {
     @And("^I set template with parameters$")
     public void iSetParameters() throws Throwable {
         template = new Template();
-        template.setBody("Bonjour @Title @FirstName @LastName, comment allez vous ?");
         template.setName("TemplateTestName");
+        template.setBody("Bonjour @Title @FirstName @LastName, comment allez vous ?");
         template.addParametersItem("@Title");
         template.addParametersItem("@FirstName");
         template.addParametersItem("@LastName");
@@ -146,7 +144,7 @@ public class EmailsSteps {
 
     @Given("^I send to an invalid mail recipient$")
     public void iSendToAnInvalidMailRecipient() throws Throwable {
-        email = new Email();
+        email = new EmailPrepared();
         recipients.add("I'm a fake adresse");
         email.setRecipients(recipients);
 
