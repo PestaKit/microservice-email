@@ -220,7 +220,7 @@ public class EmailApiController implements EmailsApi {
         // build content
         Context context = new Context();
 
-        context.setVariable("name", "jojo remondo");
+        // context.setVariable("name", "jojo remondo");
         System.out.println(context.getVariables());
 
 
