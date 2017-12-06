@@ -78,7 +78,7 @@ public class EmailApiController implements EmailsApi {
                 .toUri();
 
         // Send the email
-//        emailService.sendSimpleMessage(toEmail(entity));
+        emailService.sendSimpleMessage(toEmail(entity));
 
         return ResponseEntity.created(location).build();
     }

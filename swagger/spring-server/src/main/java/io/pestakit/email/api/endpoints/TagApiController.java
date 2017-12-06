@@ -103,6 +103,51 @@ public class TagApiController implements TagsApi {
         }
     }
 
+    @Override
+    public ResponseEntity<Void> updateTag(@ApiParam(value = "tag ID", required = true) @PathVariable("id") String id,
+                                          @ApiParam(value = "Tag", required = true) @RequestBody Tag tag) {
+        // Get tag in database
+        TagEntity entity = tagRepository.findOne(Long.valueOf(id));
+
+        // Update tag in database
+        if (entity != null) {
+            entity.setName(tag.getName());
+            entity.setTemplates(tag.getTemplates());
+            tagRepository.save(entity);
+
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @Override
+    public ResponseEntity<Void> updatePartialTag(@ApiParam(value = "tag ID", required = true) @PathVariable("id") String id,
+                                                 @ApiParam(value = "Tag", required = true) @RequestBody Tag tag) {
+        // Get tag in database
+        TagEntity entity = tagRepository.findOne(Long.valueOf(id));
+
+        // Update tag in database
+        if (entity != null) {
+
+            String name = tag.getName();
+            if (name != null && !name.isEmpty()) {
+                entity.setName(tag.getName());
+            }
+
+            List<String> templates = tag.getTemplates();
+            if (templates != null && !templates.isEmpty()) {
+                entity.setTemplates(templates);
+            }
+
+            tagRepository.save(entity);
+
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     /**
      * Process DELETE /tags/{id}?id= request
      * Delete a tag

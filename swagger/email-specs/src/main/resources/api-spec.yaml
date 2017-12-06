@@ -56,43 +56,42 @@ paths:
           description: Tag geted
           schema:
             $ref: '#/definitions/Tag'
-#    TODO: PUT
-#    put:
-#      summary: Update a tag
-#      operationId: updateTag
-#      parameters:
-#        - name: id
-#          in: path
-#          type: string
-#          description: tag ID
-#          required: true
-#        - name: tag
-#          in: body
-#          description: Tag
-#          schema:
-#            $ref: '#/definitions/Tag'
-#          required: true
-#      responses:
-#        '200':
-#          description: Tag updated
-#    TODO: PATCH
-#    patch:
-#      summary: Update name of a tag
-#      operationId: updateTagName
-#      parameters:
-#        - name: id
-#          in: path
-#          type: string
-#          description: tag ID
-#          required: true
-#        - name: tagName
-#          in: body
-#          description: Name of tag
-#          type: string
-#          required: true
-#      responses:
-#        '200':
-#          description: Name of tag updated
+    put:
+      summary: Update a tag
+      operationId: updateTag
+      parameters:
+        - name: id
+          in: path
+          type: string
+          description: tag ID
+          required: true
+        - name: tag
+          in: body
+          description: Tag
+          schema:
+            $ref: '#/definitions/Tag'
+          required: true
+      responses:
+        '200':
+          description: Tag updated
+    patch:
+      summary: Update a tag
+      operationId: updatePartialTag
+      parameters:
+        - name: id
+          in: path
+          type: string
+          description: tag ID
+          required: true
+        - name: tag
+          in: body
+          description: Tag
+          schema:
+            $ref: '#/definitions/Tag'
+          required: true
+      responses:
+        '200':
+          description: Tag updated
     delete:
       summary: Delete a tag
       operationId: deleteTag
