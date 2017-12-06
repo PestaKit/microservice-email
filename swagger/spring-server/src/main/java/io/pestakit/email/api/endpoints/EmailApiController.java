@@ -218,13 +218,15 @@ public class EmailApiController implements EmailsApi {
 
 
         // build content
-        Context context = new Context();
+        //Context context = new Context();
 
         // context.setVariable("name", "jojo remondo");
-        System.out.println(context.getVariables());
 
 
-        String body = staticTemplateService.processTemplateCode("<span th:text=\"${name}\">name</span>", context);
+        String body = mailContentBuilder.buildContent(parametersList, templateBody);
+
+        //String body = staticTemplateService.processTemplateCode("<span th:text=\"${name}\">name</span>", context);
+
 
 
         System.out.println(templateBody);
