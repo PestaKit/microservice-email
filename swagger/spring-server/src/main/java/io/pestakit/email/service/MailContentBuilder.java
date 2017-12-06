@@ -47,7 +47,6 @@ public class MailContentBuilder {
         for (Parameter p: parameters) {
             context.setVariable(p.getKey(), p.getValue());
         }
-        //context.setVariable("name", "jojo remondo");
         System.out.println(context.getVariables());
 
 

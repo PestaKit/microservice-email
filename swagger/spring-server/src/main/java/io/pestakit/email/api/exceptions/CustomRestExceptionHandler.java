@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +56,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
 
-    // handle all exceptions
+    // handle exceptions
     @ExceptionHandler({Exception.class})
     public ResponseEntity<Object> handleAll(Exception ex, WebRequest request) {
 
@@ -63,7 +65,12 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
             ApiError apiError = new ApiError(
                     HttpStatus.UNPROCESSABLE_ENTITY, "No mail was sent" ,ex.getLocalizedMessage());
             return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
-        } else { // all other exceptions
+        } else if (ex.getClass() == AddressException.class) {
+            ApiError apiError = new ApiError(
+                    HttpStatus.UNPROCESSABLE_ENTITY, "No mail was sent" ,ex.getLocalizedMessage());
+            return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
+        }
+        else{ // all other exceptions
             ApiError apiError = new ApiError(
                     HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage(), "error occured");
             return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
