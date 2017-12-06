@@ -74,24 +74,6 @@ paths:
       responses:
         '200':
           description: Tag updated
-    patch:
-      summary: Update a tag
-      operationId: updatePartialTag
-      parameters:
-        - name: id
-          in: path
-          type: string
-          description: tag ID
-          required: true
-        - name: tag
-          in: body
-          description: Tag
-          schema:
-            $ref: '#/definitions/Tag'
-          required: true
-      responses:
-        '200':
-          description: Tag updated
     delete:
       summary: Delete a tag
       operationId: deleteTag
@@ -154,6 +136,24 @@ paths:
           description: Template geted
           schema:
             $ref: '#/definitions/Template'
+    put:
+      summary: Update a template
+      operationId: updateTemplate
+      parameters:
+        - name: id
+          in: path
+          type: string
+          description: template ID
+          required: true
+        - name: template
+          in: body
+          description: Template
+          schema:
+            $ref: '#/definitions/Template'
+          required: true
+      responses:
+        '200':
+          description: Template updated
     delete:
       summary: Delete a template
       operationId: deleteTemplate

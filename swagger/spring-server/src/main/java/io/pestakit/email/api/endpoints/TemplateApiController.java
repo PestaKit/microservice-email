@@ -21,21 +21,25 @@ import java.util.List;
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-07-26T19:36:34.802Z")
 
 /**
- * TODO: Description
- * author: Loan Lassalle
+ * Used to respond to template api requests
+ *
+ * @author Loan Lassalle
  */
 @Controller
 public class TemplateApiController implements TemplatesApi {
 
-//     TODO: PUT
-//     TODO: PATCH
 //     TODO: Exceptions des actions CRUD
 //     TODO: Retour des fonctions
-//     TODO: JavaDoc et commentaires
 
+    /**
+     * Used to CRUD actions on tag table
+     */
     @Autowired
     private TagRepository tagRepository;
 
+    /**
+     * Used to CRUD actions on template table
+     */
     @Autowired
     private TemplateRepository templateRepository;
 
@@ -98,6 +102,33 @@ public class TemplateApiController implements TemplatesApi {
 
         if (template != null) {
             return ResponseEntity.ok(template);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
+     * Process PUT /templates/{id}?id= request
+     * Update a template
+     *
+     * @param id template ID
+     * @return TODO
+     */
+    @Override
+    public ResponseEntity<Void> updateTemplate(@ApiParam(value = "tag ID", required = true) @PathVariable("id") String id,
+                                               @ApiParam(value = "Tag", required = true) @RequestBody Template template) {
+        // Get template in database
+        TemplateEntity entity = templateRepository.findOne(Long.valueOf(id));
+
+        // Update template in database
+        if (entity != null) {
+            entity.setName(template.getName());
+            entity.setTags(template.getTags());
+            entity.setParameters(template.getParameters());
+            entity.setBody(template.getBody());
+            templateRepository.save(entity);
+
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }

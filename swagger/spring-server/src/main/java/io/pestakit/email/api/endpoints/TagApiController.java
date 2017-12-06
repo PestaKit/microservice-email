@@ -21,21 +21,25 @@ import java.util.List;
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-07-26T19:36:34.802Z")
 
 /**
- * TODO: Description
- * author: Loan Lassalle
+ * Used to respond to tag api requests
+ *
+ * @author Loan Lassalle
  */
 @Controller
 public class TagApiController implements TagsApi {
 
-//     TODO: PUT
-//     TODO: PATCH
 //     TODO: Exceptions des actions CRUD
 //     TODO: Retour des fonctions
-//     TODO: JavaDoc et commentaires
 
+    /**
+     * Used to CRUD actions on tag table
+     */
     @Autowired
     private TagRepository tagRepository;
 
+    /**
+     * Used to CRUD actions on template table
+     */
     @Autowired
     private TemplateRepository templateRepository;
 
@@ -103,6 +107,13 @@ public class TagApiController implements TagsApi {
         }
     }
 
+    /**
+     * Process PUT /tags/{id}?id= request
+     * Update a tag
+     *
+     * @param id tag ID
+     * @return TODO
+     */
     @Override
     public ResponseEntity<Void> updateTag(@ApiParam(value = "tag ID", required = true) @PathVariable("id") String id,
                                           @ApiParam(value = "Tag", required = true) @RequestBody Tag tag) {
@@ -113,33 +124,6 @@ public class TagApiController implements TagsApi {
         if (entity != null) {
             entity.setName(tag.getName());
             entity.setTemplates(tag.getTemplates());
-            tagRepository.save(entity);
-
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @Override
-    public ResponseEntity<Void> updatePartialTag(@ApiParam(value = "tag ID", required = true) @PathVariable("id") String id,
-                                                 @ApiParam(value = "Tag", required = true) @RequestBody Tag tag) {
-        // Get tag in database
-        TagEntity entity = tagRepository.findOne(Long.valueOf(id));
-
-        // Update tag in database
-        if (entity != null) {
-
-            String name = tag.getName();
-            if (name != null && !name.isEmpty()) {
-                entity.setName(tag.getName());
-            }
-
-            List<String> templates = tag.getTemplates();
-            if (templates != null && !templates.isEmpty()) {
-                entity.setTemplates(templates);
-            }
-
             tagRepository.save(entity);
 
             return ResponseEntity.ok().build();

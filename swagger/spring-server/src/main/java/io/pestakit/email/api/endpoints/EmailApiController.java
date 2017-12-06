@@ -28,6 +28,7 @@ import java.util.List;
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-07-26T19:36:34.802Z")
 
 /**
+ * Used to respond to email api requests
  * This class is used to handle the /emails endpoint
  * It will get emails from the GET request and
  * Send email with the POST request
@@ -41,12 +42,21 @@ public class EmailApiController implements EmailsApi {
 //     TODO: Retour des fonctions
 //     TODO: JavaDoc et commentaires
 
+    /**
+     * Used to CRUD actions on tag table
+     */
     @Autowired
     private EmailRepository emailRepository;
 
+    /**
+     * Used to CRUD actions on template table
+     */
     @Autowired
     private TemplateRepository templateRepository;
 
+    /**
+     * Used to CRUD actions on email table
+     */
     @Autowired
     private EmailService emailService;
 

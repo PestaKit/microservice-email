@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Used to organize templates by tags or categories
  *
- * author: Loan Lassalle
+ * @author Loan Lassalle
  */
 @Entity
 public class EmailEntity implements Serializable {

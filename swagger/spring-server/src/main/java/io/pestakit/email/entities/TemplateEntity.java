@@ -10,7 +10,7 @@ import java.util.List;
  * replace specific values (parameters) by
  * values provided by user
  *
- * author: Loan Lassalle
+ * @author Loan Lassalle
  */
 @Entity
 public class TemplateEntity implements Serializable {
