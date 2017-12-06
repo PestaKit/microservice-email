@@ -6,38 +6,84 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * TODO: Description
+ * Used to organize templates by tags or categories
+ *
  * author: Loan Lassalle
  */
 @Entity
 public class EmailEntity implements Serializable {
 
-    // TODO: Ajouter un attribut URL
     // TODO: JavaDoc et commentaires
 
+    /**
+     * Email's ID
+     * Used to identify email by database
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    /**
+     * Email's url
+     * Used to get the email
+     */
+    private String url;
+
+    /**
+     * Email's sender
+     */
     private String sender;
 
+    /**
+     * Email's recipient list
+     */
     @ElementCollection
     private List<String> recipients;
 
+    /**
+     * Email's carbon copy list
+     */
     @ElementCollection
     private List<String> carbonCopy;
 
+    /**
+     * Email's blind carbon copy list
+     */
     @ElementCollection
     private List<String> blindCarbonCopy;
 
+    /**
+     * Email's subject
+     */
     private String subject;
 
+    /**
+     * Email's body
+     */
     // TODO: Voir pour une gestion dynamique. class Text ?
     @Column(length=10000)
     private String body;
 
     public long getId() {
         return id;
+    }
+
+    /**
+     * Get email's url
+     *
+     * @return email's url
+     */
+    public String getUrl() {
+        return url;
+    }
+
+    /**
+     * Set email's url
+     *
+     * @param url email's url to set
+     */
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public String getSender() {

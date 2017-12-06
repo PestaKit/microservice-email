@@ -279,7 +279,8 @@ definitions:
   Email:
     type: object
     properties:
-      # TODO: Ajouter un attribut URL ?
+      url:
+        type: string
       sender:
         type: string
       recipients:

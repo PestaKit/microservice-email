@@ -58,7 +58,6 @@ public class EmailApiController implements EmailsApi {
     @Autowired
     protected StaticTemplateService staticTemplateService;
 
-
     /**
      * Process POST /emails request
      * Create an email with an email prepared
@@ -80,8 +79,8 @@ public class EmailApiController implements EmailsApi {
                 .buildAndExpand(entity.getId())
                 .toUri();
 
-        // send the email
-        emailService.sendSimpleMessage(toEmail(entity));
+        // Send the email
+//        emailService.sendSimpleMessage(toEmail(entity));
 
         return ResponseEntity.created(location).build();
     }
@@ -125,21 +124,64 @@ public class EmailApiController implements EmailsApi {
     }
 
     /**
-     * Check if a template exist
-     * If it does not, set an empty template
+     * Transform an email prepared to an email entity
+     * It will as well set the body with the given template
+     * and parameters
      *
      * @param emailPrepared email prepared
+     * @return an email entity
      */
-    private void templateExist(EmailPrepared emailPrepared) {
+    private EmailEntity toEmailEntity(EmailPrepared emailPrepared) {
+        EmailEntity entity = new EmailEntity();
 
-//        TODO: Vérifier l'id
-        String url = emailPrepared.getTemplate();
-        Long id = Long.valueOf(url.substring(url.lastIndexOf('/') + 1));
-        TemplateEntity templateEntity = templateRepository.findOne(id);
+        entity.setSender(emailPrepared.getSender());
+        entity.setRecipients(emailPrepared.getRecipients());
+        entity.setCarbonCopy(emailPrepared.getCarbonCopy());
+        entity.setBlindCarbonCopy(emailPrepared.getBlindCarbonCopy());
+        entity.setSubject(emailPrepared.getSubject());
 
-        if (templateRepository.findOne(id) == null) {
-            emailPrepared.setTemplate("");
+        TemplateEntity templateEntity = null;
+        String body = "";
+
+        // Get template in database
+        try {
+//            TODO: Vérifier si l'URL est bien de la forme api/templates/id
+            String template = emailPrepared.getTemplate();
+            Long id = Long.valueOf(template.substring(template.lastIndexOf('/') + 1));
+            templateEntity = templateRepository.findOne(id);
+        } catch (NumberFormatException e) {
+
         }
+
+        // Insert values in place of parameters
+        if (templateEntity != null) {
+//        TODO: Check if parameters are Ok with this template
+//        TODO: Insérer les valeurs des paramètres à la place des paramètres
+            List<Parameter> parametersList = emailPrepared.getParameters();
+            // utilise template du fs
+//            body = mailContentBuilder.buildContent(parametersList, "test");
+
+            // build content
+            Context context = new Context();
+
+            // context.setVariable("name", "jojo remondo");
+            System.out.println(context.getVariables());
+
+            body = staticTemplateService.processTemplateCode("<span th:text=\"${name}\">name</span>", context);
+
+            System.out.println(templateEntity.getBody());
+
+            // todo corriger static template service pour avoir n importe quel template, si possible
+            //String body = mailContentBuilder.buildContent(parametersList, templateBody);
+
+
+            System.out.println("body: " + body);
+        }
+
+        // Set body's email to send
+        entity.setBody(body);
+
+        return entity;
     }
 
     /**
@@ -151,6 +193,7 @@ public class EmailApiController implements EmailsApi {
     private EmailEntity toEmailEntity(Email email) {
         EmailEntity entity = new EmailEntity();
 
+        entity.setUrl(email.getUrl());
         entity.setSender(email.getSender());
         entity.setRecipients(email.getRecipients());
         entity.setCarbonCopy(email.getCarbonCopy());
@@ -170,107 +213,14 @@ public class EmailApiController implements EmailsApi {
     private Email toEmail(EmailEntity entity) {
         Email email = new Email();
 
+        email.setUrl(entity.getUrl());
         email.setSender(entity.getSender());
         email.setRecipients(entity.getRecipients());
         email.setCarbonCopy(entity.getCarbonCopy());
         email.setBlindCarbonCopy(entity.getBlindCarbonCopy());
         email.setSubject(entity.getSubject());
         email.setBody(entity.getBody());
-        return email;
-    }
-
-    /**
-     * Transform an email prepared to an email entity
-     * It will as well set the body with the given template
-     * and parameters
-     *
-     * @param emailPrepared email prepared
-     * @return an email entity
-     */
-    private EmailEntity toEmailEntity(EmailPrepared emailPrepared) {
-
-        EmailEntity entity = new EmailEntity();
-
-        entity.setSender(emailPrepared.getSender());
-        entity.setRecipients(emailPrepared.getRecipients());
-        entity.setCarbonCopy(emailPrepared.getCarbonCopy());
-        entity.setBlindCarbonCopy(emailPrepared.getBlindCarbonCopy());
-        entity.setSubject(emailPrepared.getSubject());
-
-//        TODO: Vérifier l'id
-        // Get body's email prepared
-
-
-        templateExist(emailPrepared);
-        String url = emailPrepared.getTemplate();
-        Long id = Long.valueOf(url.substring(url.lastIndexOf('/') + 1));
-        TemplateEntity templateEntity = templateRepository.findOne(id);
-        String templateBody = templateEntity.getBody();
-
-
-//        todo check if parameters are Ok with this template
-//        TODO: Insérer les valeurs des paramètres
-
-
-        List<Parameter> parametersList = emailPrepared.getParameters();
-
-        // Set body's email to send
-
-
-        // build content
-        Context context = new Context();
-
-        // context.setVariable("name", "jojo remondo");
-        System.out.println(context.getVariables());
-
-
-        String body = staticTemplateService.processTemplateCode("<span th:text=\"${name}\">name</span>", context);
-
-
-        System.out.println(templateBody);
-
-        // todo corriger static template service pour avoir n importe quel template, si possible
-        //String body = mailContentBuilder.buildContent(parametersList, templateBody);
-
-
-        System.out.println("body: " + body);
-
-
-
-
-        entity.setBody(body);
-
-        return entity;
-    }
-
-    /**
-     * Transform an email prepared to an email
-     *
-     * @param emailPrepared email prepared
-     * @return an email
-     *//*
-    private Email toEmail(EmailPrepared emailPrepared) {
-        Email email = new Email();
-
-        email.setSender(emailPrepared.getSender());
-        email.setRecipients(emailPrepared.getRecipients());
-        email.setCarbonCopy(emailPrepared.getCarbonCopy());
-        email.setBlindCarbonCopy(emailPrepared.getBlindCarbonCopy());
-        email.setSubject(emailPrepared.getSubject());
-
-//        TODO: Vérifier l'id
-        // Get body's email prepared
-        String url = emailPrepared.getTemplate();
-        Long id = Long.valueOf(url.substring(url.lastIndexOf('/') + 1));
-        TemplateEntity templateEntity = templateRepository.findOne(id);
-        String body = templateEntity.getBody();
-
-        // Insert values in place of parameters
-//        TODO: Insérer les valeurs des paramètres à la place des paramètres
-
-        // Set body's email to send
-        email.setBody(body);
 
         return email;
-    }*/
+    }
 }
