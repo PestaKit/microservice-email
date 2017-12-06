@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.thymeleaf.context.Context;
 
+import javax.mail.MessagingException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +65,7 @@ public class EmailApiController implements EmailsApi {
      * @return TODO
      */
     @Override
-    public ResponseEntity<Object> createEmail(@ApiParam(value = "Create an email", required = true) @RequestBody EmailPrepared emailPrepared) {
+    public ResponseEntity<Object> createEmail(@ApiParam(value = "Create an email", required = true) @RequestBody EmailPrepared emailPrepared) throws MessagingException {
 
         // Create email in database
         // Prepare an email with headers, template and parameters
@@ -78,7 +79,7 @@ public class EmailApiController implements EmailsApi {
                 .toUri();
 
         // Send the email
-        emailService.sendSimpleMessage(toEmail(entity));
+        emailService.sendHtmlEmail(toEmail(entity));
 
         return ResponseEntity.created(location).build();
     }
@@ -156,22 +157,11 @@ public class EmailApiController implements EmailsApi {
 //        TODO: Check if parameters are Ok with this template
 //        TODO: Insérer les valeurs des paramètres à la place des paramètres
             List<Parameter> parametersList = emailPrepared.getParameters();
-            // utilise template du fs
-//            body = mailContentBuilder.buildContent(parametersList, "test");
 
             // build content
             Context context = new Context();
 
-            // context.setVariable("name", "jojo remondo");
-            System.out.println(context.getVariables());
-
-            body = staticTemplateService.processTemplateCode("<span th:text=\"${name}\">name</span>", context);
-
-            System.out.println(templateEntity.getBody());
-
-            // todo corriger static template service pour avoir n importe quel template, si possible
-            //String body = mailContentBuilder.buildContent(parametersList, templateBody);
-
+            body = mailContentBuilder.buildContent(parametersList, templateEntity.getBody());
 
             System.out.println("body: " + body);
         }
