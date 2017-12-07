@@ -15,5 +15,5 @@ public interface TemplateService {
      * @param template from which extract keys
      * @return list of all keys contained in the template
      */
-    List<String> getKeys(String template);
+    List<String> getParameters(String template);
 }

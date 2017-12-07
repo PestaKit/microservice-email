@@ -64,8 +64,9 @@ public class TemplateApiController implements TemplatesApi {
         TemplateEntity entity = toTemplateEntity(template);
 
         // Extract keys form the template
-        List<String> keys = templateService.getKeys(entity.getBody());
+        List<String> keys = templateService.getParameters(entity.getBody());
 
+        
         templateRepository.save(entity);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
