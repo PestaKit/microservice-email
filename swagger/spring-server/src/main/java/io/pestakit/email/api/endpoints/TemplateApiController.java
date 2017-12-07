@@ -135,9 +135,9 @@ public class TemplateApiController implements TemplatesApi {
             entity.setTags(template.getTags());
 
             // Extract parameters form the template
-            entity.setParameters(templateService.getParameters(template.getBody()));
-
-            entity.setBody(template.getBody());
+            String body = template.getBody();
+            entity.setParameters(templateService.getParameters(body));
+            entity.setBody(body);
 
             templateRepository.save(entity);
 
@@ -209,9 +209,9 @@ public class TemplateApiController implements TemplatesApi {
         entity.setTags(tagsIfExist(template.getTags()));
 
         // Extract parameters form the template
-        entity.setParameters(templateService.getParameters(template.getBody()));
-
-        entity.setBody(template.getBody());
+        String body = template.getBody();
+        entity.setParameters(templateService.getParameters(body));
+        entity.setBody(body);
 
         return entity;
     }
