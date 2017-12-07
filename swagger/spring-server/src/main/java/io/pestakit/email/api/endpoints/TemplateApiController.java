@@ -2,6 +2,7 @@ package io.pestakit.email.api.endpoints;
 
 import io.pestakit.email.api.TemplatesApi;
 import io.pestakit.email.api.model.Template;
+import io.pestakit.email.api.model.TemplateBody;
 import io.pestakit.email.entities.TemplateEntity;
 import io.pestakit.email.repositories.TagRepository;
 import io.pestakit.email.repositories.TemplateRepository;
@@ -58,14 +59,10 @@ public class TemplateApiController implements TemplatesApi {
      * @return TODO
      */
     @Override
-    public ResponseEntity<Object> createTemplate(@ApiParam(value = "Create a template", required = true) @RequestBody Template template) {
+    public ResponseEntity<Object> createTemplate(@ApiParam(value = "Create a template", required = true) @RequestBody TemplateBody template) {
 
         // Create template in database
         TemplateEntity entity = toTemplateEntity(template);
-
-        // Extract keys form the template
-        List<String> keys = templateService.getKeys(entity.getBody());
-
         templateRepository.save(entity);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -127,7 +124,7 @@ public class TemplateApiController implements TemplatesApi {
      */
     @Override
     public ResponseEntity<Void> updateTemplate(@ApiParam(value = "template ID", required = true) @PathVariable("id") String id,
-                                               @ApiParam(value = "Template", required = true) @RequestBody Template template) {
+                                               @ApiParam(value = "Template", required = true) @RequestBody TemplateBody template) {
         // Get template in database
         TemplateEntity entity = templateRepository.findOne(Long.valueOf(id));
 
@@ -135,7 +132,10 @@ public class TemplateApiController implements TemplatesApi {
         if (entity != null) {
             entity.setName(template.getName());
             entity.setTags(template.getTags());
-            entity.setParameters(template.getParameters());
+
+            // Extract parameters form the template
+            entity.setParameters(templateService.getKeys(entity.getBody()));
+
             entity.setBody(template.getBody());
 
             templateRepository.save(entity);
@@ -200,13 +200,16 @@ public class TemplateApiController implements TemplatesApi {
      * @param template template
      * @return a template entity
      */
-    private TemplateEntity toTemplateEntity(Template template) {
+    private TemplateEntity toTemplateEntity(TemplateBody template) {
         TemplateEntity entity = new TemplateEntity();
 
         entity.setUrl(template.getUrl());
         entity.setName(template.getName());
         entity.setTags(tagsIfExist(template.getTags()));
-        entity.setParameters(template.getParameters());
+
+        // Extract parameters form the template
+        entity.setParameters(templateService.getKeys(entity.getBody()));
+
         entity.setBody(template.getBody());
 
         return entity;

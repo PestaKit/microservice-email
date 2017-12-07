@@ -230,6 +230,21 @@ definitions:
         items:
           type: string
 
+  TemplateBody:
+    type: object
+    properties:
+      url:
+        type: string
+      name:
+        type: string
+      tags:
+        type: array
+        items:
+#         TODO: Voir comment utiliser une class ShortTag
+          type: string
+      body:
+        type: string
+
   Template:
     type: object
     properties:

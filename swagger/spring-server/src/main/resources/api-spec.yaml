@@ -100,7 +100,7 @@ paths:
           description: Create a template
           required: true
           schema:
-            $ref: '#/definitions/Template'
+            $ref: '#/definitions/TemplateBody'
       responses:
         '201':
           description: Template created
@@ -149,7 +149,7 @@ paths:
           in: body
           description: Template
           schema:
-            $ref: '#/definitions/Template'
+            $ref: '#/definitions/TemplateBody'
           required: true
       responses:
         '200':
@@ -229,6 +229,21 @@ definitions:
         type: array
         items:
           type: string
+
+  TemplateBody:
+    type: object
+    properties:
+      url:
+        type: string
+      name:
+        type: string
+      tags:
+        type: array
+        items:
+#         TODO: Voir comment utiliser une class ShortTag
+          type: string
+      body:
+        type: string
 
   Template:
     type: object
