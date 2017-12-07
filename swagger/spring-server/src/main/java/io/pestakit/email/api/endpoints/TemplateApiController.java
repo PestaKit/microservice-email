@@ -5,6 +5,7 @@ import io.pestakit.email.api.model.Template;
 import io.pestakit.email.entities.TemplateEntity;
 import io.pestakit.email.repositories.TagRepository;
 import io.pestakit.email.repositories.TemplateRepository;
+import io.pestakit.email.service.TemplateService;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +45,12 @@ public class TemplateApiController implements TemplatesApi {
     private TemplateRepository templateRepository;
 
     /**
+     * Used to process template
+     */
+    @Autowired
+    private TemplateService templateService;
+
+    /**
      * Process POST /templates request
      * Create a template
      *
@@ -55,6 +62,10 @@ public class TemplateApiController implements TemplatesApi {
 
         // Create template in database
         TemplateEntity entity = toTemplateEntity(template);
+
+        // Extract keys form the template
+        List<String> keys = templateService.getKeys(entity.getBody());
+
         templateRepository.save(entity);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()

@@ -61,12 +61,8 @@ public class EmailApiController implements EmailsApi {
     @Autowired
     private EmailService emailService;
 
-    // sera surement supprimer
     @Autowired
     private MailContentBuilder mailContentBuilder;
-
-    @Autowired
-    protected StaticTemplateService staticTemplateService;
 
     /**
      * Process POST /emails requestphh
