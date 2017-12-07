@@ -14,6 +14,7 @@ import io.pestakit.email.service.StaticTemplateService;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailParseException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -75,7 +76,7 @@ public class EmailApiController implements EmailsApi {
      * @return TODO
      */
     @Override
-    public ResponseEntity<Object> createEmail(@ApiParam(value = "Create an email", required = true) @RequestBody EmailPrepared emailPrepared) throws MessagingException {
+    public ResponseEntity<Object> createEmail(@ApiParam(value = "Create an email", required = true) @RequestBody EmailPrepared emailPrepared) {
 
         // Create email in database
         // Prepare an email with headers, template and parameters
@@ -89,7 +90,11 @@ public class EmailApiController implements EmailsApi {
                 .toUri();
 
         // Send the email
-        emailService.sendHtmlEmail(toEmail(entity));
+        try {
+            emailService.sendHtmlEmail(toEmail(entity));
+        } catch (MessagingException e) {
+            throw new MailParseException("Error mail");
+        }
 
         return ResponseEntity.created(location).build();
     }
