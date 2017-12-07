@@ -33,7 +33,6 @@ public class TemplateServiceImp implements TemplateService {
         {
             e.printStackTrace();
         }
-
         return parameters;
     }
 }
