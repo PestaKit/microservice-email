@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.util.List;
 
 
 /**
@@ -34,8 +35,14 @@ public class EmailServiceImp implements EmailService {
         helper.setCc(email.getCarbonCopy().toArray(new String[email.getCarbonCopy().size()]));
         helper.setBcc(email.getBlindCarbonCopy().toArray(new String[email.getBlindCarbonCopy().size()]));
         helper.setSubject(email.getSubject());
+            
         mailSender.send(message);
 
 
+    }
+
+    @Override
+    public boolean checkParameters(List<String> emailParameters, List<String> templateParameters) {
+        return false;
     }
 }
