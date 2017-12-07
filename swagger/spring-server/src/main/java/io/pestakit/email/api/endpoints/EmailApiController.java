@@ -89,6 +89,10 @@ public class EmailApiController implements EmailsApi {
                 .buildAndExpand(entity.getId())
                 .toUri();
 
+        // Update email's URL in database
+        entity.setUrl(location.toString());
+        emailRepository.save(entity);
+
         // Send the email
         try {
             emailService.sendHtmlEmail(toEmail(entity));
