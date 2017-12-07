@@ -69,7 +69,7 @@ public class EmailApiController implements EmailsApi {
     protected StaticTemplateService staticTemplateService;
 
     /**
-     * Process POST /emails request
+     * Process POST /emails requestphh
      * Create an email with an email prepared
      *
      * @param emailPrepared email prepared
@@ -93,7 +93,7 @@ public class EmailApiController implements EmailsApi {
         try {
             emailService.sendHtmlEmail(toEmail(entity));
         } catch (MessagingException e) {
-            throw new MailParseException("Error mail");
+            throw new MailParseException("Error mail", e);
         }
 
         return ResponseEntity.created(location).build();

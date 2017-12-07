@@ -3,7 +3,6 @@ package io.pestakit.email.service;
 import io.pestakit.email.api.model.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.util.List;
@@ -17,21 +16,11 @@ import java.util.List;
 @Service
 public class MailContentBuilder {
 
-    //private TemplateEngine templateEngine;
-
     @Autowired
     protected StaticTemplateService staticTemplateService;
 
-
-
     @Autowired
-    public MailContentBuilder(TemplateEngine templateEngine) {
-
-        templateEngine = new TemplateEngine();
-    }
-
-
-
+    public MailContentBuilder() {}
 
     /**
      * Inject values of the parameters in the fields
