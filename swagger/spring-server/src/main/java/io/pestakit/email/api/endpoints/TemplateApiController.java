@@ -115,8 +115,8 @@ public class TemplateApiController implements TemplatesApi {
      * @return TODO
      */
     @Override
-    public ResponseEntity<Void> updateTemplate(@ApiParam(value = "tag ID", required = true) @PathVariable("id") String id,
-                                               @ApiParam(value = "Tag", required = true) @RequestBody Template template) {
+    public ResponseEntity<Void> updateTemplate(@ApiParam(value = "template ID", required = true) @PathVariable("id") String id,
+                                               @ApiParam(value = "Template", required = true) @RequestBody Template template) {
         // Get template in database
         TemplateEntity entity = templateRepository.findOne(Long.valueOf(id));
 
@@ -124,8 +124,10 @@ public class TemplateApiController implements TemplatesApi {
         if (entity != null) {
             entity.setName(template.getName());
             entity.setTags(template.getTags());
+
             entity.setParameters(template.getParameters());
             entity.setBody(template.getBody());
+
             templateRepository.save(entity);
 
             return ResponseEntity.ok().build();

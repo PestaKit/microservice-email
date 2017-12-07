@@ -74,6 +74,7 @@ paths:
       responses:
         '200':
           description: Tag updated
+
     delete:
       summary: Delete a tag
       operationId: deleteTag
