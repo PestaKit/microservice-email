@@ -124,8 +124,10 @@ public class TemplateApiController implements TemplatesApi {
         if (entity != null) {
             entity.setName(template.getName());
             entity.setTags(template.getTags());
+
             entity.setParameters(template.getParameters());
             entity.setBody(template.getBody());
+
             templateRepository.save(entity);
 
             return ResponseEntity.ok().build();
