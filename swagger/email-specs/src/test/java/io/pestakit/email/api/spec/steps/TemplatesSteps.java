@@ -42,6 +42,8 @@ public class TemplatesSteps {
     @Given("^I have a template payload$")
     public void i_have_a_template_payload() throws Throwable {
         template = new Template();
+        template.setBody("Bonjour, @Title @FirstName @LastName, comment allez vous ?");
+        template.setName("TemplateBonjour");
     }
 
     @When("^I POST it to the /templates endpoint$")
