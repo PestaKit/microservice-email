@@ -44,9 +44,6 @@ public class TemplatesSteps {
         template = new Template();
         template.setBody("Bonjour, @Title @FirstName @LastName, comment allez vous ?");
         template.setName("TemplateBonjour");
-        template.addParametersItem("@Title");
-        template.addParametersItem("@FirstName");
-        template.addParametersItem("@LastName");
     }
 
     @When("^I POST it to the /templates endpoint$")
