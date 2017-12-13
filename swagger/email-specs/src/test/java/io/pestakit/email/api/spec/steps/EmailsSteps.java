@@ -125,18 +125,17 @@ public class EmailsSteps {
         parameter.setValue("Monsieur");
         email.addParametersItem(parameter);
 
-        Parameter parameter2 = new Parameter();
+        parameter = new Parameter();
         parameter.setKey("@FirstName");
         parameter.setValue("Jérémie");
-        email.addParametersItem(parameter2);
+        email.addParametersItem(parameter);
 
-        Parameter parameter3 = new Parameter();
+        parameter = new Parameter();
         parameter.setKey("@LastName");
         parameter.setValue("Zanone");
-        email.addParametersItem(parameter3);
-        String test = api.getTemplate(1L).getUrl();
-        System.out.println(test);
-        email.setTemplate("localhost:8080/api/templates/2");
+        email.addParametersItem(parameter);
+
+        email.setTemplate("localhost:8080/api/templates/1");
 
     }
 
@@ -177,31 +176,6 @@ public class EmailsSteps {
         assertEquals(1, newNbEmailsInAPI - lastNbEmailsInAPI);
     }
 
-
-    @Given("^I send to an invalid mail recipient$")
-    public void iSendToAnInvalidMailRecipient() throws Throwable {
-        email = new EmailPrepared();
-        recipients.add("I'm a fake adresse");
-        email.setRecipients(recipients);
-
-        wiser.setPort(3030);
-        wiser.setHostname("localhost");
-        wiser.start();
-        lastNbEmailsInAPI = api.getEmails().size();
-        try {
-            lastApiResponse = api.createEmailWithHttpInfo(email);
-            lastApiCallThrewException = false;
-            lastApiException = null;
-            lastStatusCode = lastApiResponse.getStatusCode();
-        } catch (ApiException e) {
-            lastApiCallThrewException = true;
-            lastApiResponse = null;
-            lastApiException = e;
-            lastStatusCode = lastApiException.getCode();
-        }
-        wiser.stop();
-    }
-
     @Then("^I get a (\\d+) status code$")
     public void iGetAStatusCode(int arg0) throws Throwable {
         assertEquals(arg0, lastStatusCode);
@@ -210,5 +184,17 @@ public class EmailsSteps {
     @And("^No email is send$")
     public void noEmailIsSend() throws Throwable {
         assertEquals(wiser.getMessages().size(), 0);
+    }
+
+    @And("^I set an invalid recipient$")
+    public void iSetAnInvalidRecipient() throws Throwable {
+        recipients.clear();
+        recipients.add("I'm a fake address");
+        email.setRecipients(recipients);
+    }
+
+    @And("^I set an invalid sender$")
+    public void iSetAnInvalidSender() throws Throwable {
+        email.setSender("ACH NEIN JE NE SUIS PAS UN SENDER VALIDE");
     }
 }
