@@ -2,6 +2,7 @@ Feature: Spring api controller email
 
   Background:
     Given There is a email api
+    And I created 3 new templates
 
   Scenario: send an email
     Given I have a email object

@@ -1,6 +1,7 @@
 package io.pestakit.email.api.spec.steps;
 
 
+import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -52,9 +53,46 @@ public class EmailsSteps {
         assertNotNull(api);
     }
 
+    @And("^I created (\\d+) new templates$")
+    public void iHaveTemplates(int arg0) throws Throwable {
+        int oldNbTemplate = api.getTemplates().size();
+
+        template = new Template();
+        template.setBody("Bonjour, @Title @FirstName @LastName, comment allez vous ?");
+        template.setName("TemplateBonjour");
+        template.addParametersItem("@Title");
+        template.addParametersItem("@FirstName");
+        template.addParametersItem("@LastName");
+
+        api.createTemplate(template);
+
+        template.setBody("Bonsoir, @Title @FirstName @LastName, comment allez vous ? @Bye");
+        template.setName("TemplateBonsoir");
+        template.addParametersItem("@Title");
+        template.addParametersItem("@FirstName");
+        template.addParametersItem("@LastName");
+        template.addParametersItem("@Bye");
+
+        api.createTemplate(template);
+
+        template.setBody("@Greetings, @Title @FirstName @LastName, comment allez vous ?");
+        template.setName("TemplateGreetings");
+        template.addParametersItem("@Greetings");
+        template.addParametersItem("@Title");
+        template.addParametersItem("@FirstName");
+        template.addParametersItem("@LastName");
+
+        api.createTemplate(template);
+
+        int newNbTemplate = api.getTemplates().size();
+
+        assertEquals(arg0, newNbTemplate - oldNbTemplate);
+
+    }
+
     @Given("^I have a email object$")
     public void iHaveAEmailObject() throws Throwable {
-        email = new Email();
+        email = new EmailPrepared();
     }
 
     @And("^I set a sender$")
@@ -81,12 +119,6 @@ public class EmailsSteps {
 
     @And("^I set template with parameters$")
     public void iSetParameters() throws Throwable {
-        template = new Template();
-        template.setName("TemplateTestName");
-        template.setBody("Bonjour @Title @FirstName @LastName, comment allez vous ?");
-        template.addParametersItem("@Title");
-        template.addParametersItem("@FirstName");
-        template.addParametersItem("@LastName");
 
         Parameter parameter = new Parameter();
         parameter.setKey("@Title");
@@ -102,6 +134,10 @@ public class EmailsSteps {
         parameter.setKey("@LastName");
         parameter.setValue("Zanone");
         email.addParametersItem(parameter3);
+        String test = api.getTemplate(1L).getUrl();
+        System.out.println(test);
+        email.setTemplate("localhost:8080/api/templates/2");
+
     }
 
     @When("^I POST it to the /email endpoint$")
@@ -138,7 +174,7 @@ public class EmailsSteps {
     @And("^I have sent an email$")
     public void iHaveSentAnEmail() throws Throwable {
         newNbEmailsInAPI = api.getEmails().size();
-        assertEquals(copy.size() + recipients.size(), newNbEmailsInAPI - lastNbEmailsInAPI);
+        assertEquals(1, newNbEmailsInAPI - lastNbEmailsInAPI);
     }
 
 
@@ -166,7 +202,6 @@ public class EmailsSteps {
         wiser.stop();
     }
 
-
     @Then("^I get a (\\d+) status code$")
     public void iGetAStatusCode(int arg0) throws Throwable {
         assertEquals(arg0, lastStatusCode);
@@ -176,6 +211,4 @@ public class EmailsSteps {
     public void noEmailIsSend() throws Throwable {
         assertEquals(wiser.getMessages().size(), 0);
     }
-
-
 }
