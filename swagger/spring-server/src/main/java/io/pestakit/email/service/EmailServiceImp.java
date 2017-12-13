@@ -1,6 +1,7 @@
 package io.pestakit.email.service;
 
 import io.pestakit.email.api.model.Email;
+import io.pestakit.email.api.model.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -35,14 +36,28 @@ public class EmailServiceImp implements EmailService {
         helper.setCc(email.getCarbonCopy().toArray(new String[email.getCarbonCopy().size()]));
         helper.setBcc(email.getBlindCarbonCopy().toArray(new String[email.getBlindCarbonCopy().size()]));
         helper.setSubject(email.getSubject());
-            
+
         mailSender.send(message);
 
 
     }
 
     @Override
-    public boolean checkParameters(List<String> emailParameters, List<String> templateParameters) {
-        return false;
+    public boolean checkParameters(List<Parameter> emailParameters, List<String> templateParameters) {
+
+        if(emailParameters.size() != templateParameters.size())
+        {
+            return false;
+        }
+
+        for (Parameter param : emailParameters) {
+
+            if (!templateParameters.contains(param.getKey()))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

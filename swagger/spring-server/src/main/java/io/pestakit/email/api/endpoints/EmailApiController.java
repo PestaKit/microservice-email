@@ -23,6 +23,7 @@ import org.thymeleaf.context.Context;
 
 import javax.mail.MessagingException;
 import java.net.URI;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -170,8 +171,16 @@ public class EmailApiController implements EmailsApi {
         // Insert values in place of parameters
         if (templateEntity != null) {
 //        TODO: Check if parameters are Ok with this template
-//        TODO: Insérer les valeurs des paramètres à la place des paramètres
             List<Parameter> parametersList = emailPrepared.getParameters();
+
+
+            //check if parameters are corrects
+            if(!emailService.checkParameters(parametersList, templateEntity.getParameters()))
+            {
+                throw  new InvalidParameterException("error in parameters");
+            }
+
+
 
             // build content
             Context context = new Context();
