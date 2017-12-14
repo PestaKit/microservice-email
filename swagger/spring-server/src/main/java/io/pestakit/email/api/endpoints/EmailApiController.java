@@ -10,7 +10,6 @@ import io.pestakit.email.repositories.EmailRepository;
 import io.pestakit.email.repositories.TemplateRepository;
 import io.pestakit.email.service.EmailService;
 import io.pestakit.email.service.MailContentBuilder;
-import io.pestakit.email.service.StaticTemplateService;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -62,6 +61,9 @@ public class EmailApiController implements EmailsApi {
     @Autowired
     private EmailService emailService;
 
+    /**
+     * Used to instance email's body from template and parameters
+     */
     @Autowired
     private MailContentBuilder mailContentBuilder;
 
@@ -75,10 +77,9 @@ public class EmailApiController implements EmailsApi {
     @Override
     public ResponseEntity<Object> createEmail(@ApiParam(value = "Create an email", required = true) @RequestBody EmailPrepared emailPrepared) {
 
-        // Create email in database
         // Prepare an email with headers, template and parameters
         EmailEntity entity = toEmailEntity(emailPrepared);
-        emailRepository.save(entity);
+        emailRepository.save(entity);  // Save email in database
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -96,7 +97,6 @@ public class EmailApiController implements EmailsApi {
         } catch (MessagingException e) {
             throw new MailParseException("Error mail", e);
         }
-
         return ResponseEntity.created(location).build();
     }
 
@@ -170,24 +170,15 @@ public class EmailApiController implements EmailsApi {
 
         // Insert values in place of parameters
         if (templateEntity != null) {
-//        TODO: Check if parameters are Ok with this template
             List<Parameter> parametersList = emailPrepared.getParameters();
-
-
             //check if parameters are corrects
             if(!emailService.checkParameters(parametersList, templateEntity.getParameters()))
             {
                 throw  new InvalidParameterException("error in parameters");
             }
-
-
-
             // build content
             Context context = new Context();
-
             body = mailContentBuilder.buildContent(parametersList, templateEntity.getBody());
-
-            System.out.println("body: " + body);
         }
 
         // Set body's email to send

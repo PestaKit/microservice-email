@@ -28,7 +28,6 @@ public class EmailServiceImp implements EmailService {
 
         MimeMessage message = mailSender.createMimeMessage();
 
-
         MimeMessageHelper helper = new MimeMessageHelper(message, false,"utf-8");
         message.setContent(email.getBody(), "text/html");
         helper.setFrom(email.getSender());
@@ -51,13 +50,11 @@ public class EmailServiceImp implements EmailService {
         }
 
         for (Parameter param : emailParameters) {
-
             if (!templateParameters.contains(param.getKey()))
             {
                 return false;
             }
         }
-
         return true;
     }
 }
