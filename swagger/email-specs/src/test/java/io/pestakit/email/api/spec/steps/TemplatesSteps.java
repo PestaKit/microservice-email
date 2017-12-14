@@ -17,7 +17,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 /**
- * @author Loan Lassalle, Jérémie Zanone
+ * @author Jérémie Zanone & Loan Lassalle
  */
 public class TemplatesSteps {
 

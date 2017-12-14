@@ -1,5 +1,7 @@
 package io.pestakit.email.api.spec.steps;
 
+
+import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -15,10 +17,14 @@ import org.subethamail.wiser.Wiser;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
+/**
+ * @author Jérémie Zanone
+ */
 public class EmailsSteps {
 
     private Template template;
@@ -27,6 +33,7 @@ public class EmailsSteps {
     int newNbEmailsInAPI;
     List<String> copy = new ArrayList<>();
     List<String> recipients = new ArrayList<>();
+    List<String> blindCopy = new ArrayList<>();
     private Wiser wiser;
 
     private Environment environment;
@@ -93,10 +100,16 @@ public class EmailsSteps {
         email.setRecipients(recipients);
     }
 
+    @And("^I set a carbonCopy$")
+    public void iSetACarbonCopy() throws Throwable {
+        copy.add("loan.lassale@heig-vd.ch");
+        email.setCarbonCopy(copy);
+    }
+
     @And("^I set a blindCarbonCopy$")
     public void iSetABlindCarbonCopy() throws Throwable {
-        copy.add("loan.lassale@heig-vd.ch");
-        email.setBlindCarbonCopy(copy);
+        blindCopy.add("loan.lassale@heig-vd.ch");
+        email.setBlindCarbonCopy(blindCopy);
     }
 
     @And("^I set a subject$")
@@ -154,7 +167,7 @@ public class EmailsSteps {
 
     @And("^The recipient receive an email$")
     public void theRecipientReceiveAnEmail() throws Throwable {
-        assertEquals(wiser.getMessages().size(), copy.size() + recipients.size());
+        assertEquals(wiser.getMessages().size(), copy.size() + recipients.size() + blindCopy.size());
     }
 
     @And("^I have sent an email$")
@@ -191,4 +204,6 @@ public class EmailsSteps {
         assertTrue(api.getEmail(Long.valueOf(idLastEmail)).getSender().contains("@"));
         assertFalse(api.getEmail(Long.valueOf(idLastEmail)).getSender().contains(" "));
     }
+
+
 }

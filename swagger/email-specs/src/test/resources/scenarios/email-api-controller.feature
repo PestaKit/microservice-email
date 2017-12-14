@@ -8,6 +8,7 @@ Feature: Spring api controller email
     Given I have a email object
     And I set a sender
     And I set recipients
+    And I set a carbonCopy
     And I set a blindCarbonCopy
     And I set a subject
     And I set template with parameters
