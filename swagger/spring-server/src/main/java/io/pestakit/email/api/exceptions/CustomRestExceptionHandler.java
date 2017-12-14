@@ -36,7 +36,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
      * @param ex exception
      * @param headers header to send
      * @param status to send
-     * @param request that caused the error
+     * @param request that caused    the error
      * @return handle that send back the response
      */
     @Override
