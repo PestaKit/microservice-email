@@ -7,14 +7,21 @@ import cucumber.api.java.en.When;
 import io.pestakit.email.ApiException;
 import io.pestakit.email.ApiResponse;
 import io.pestakit.email.api.DefaultApi;
+import io.pestakit.email.api.dto.Tag;
 import io.pestakit.email.api.dto.Template;
 import io.pestakit.email.api.spec.helpers.Environment;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
+/**
+ * @author Loan Lassalle
+ */
 public class TemplatesSteps {
+
+    private Tag tag;
 
     private Template template;
     private Long id;
@@ -207,6 +214,23 @@ public class TemplatesSteps {
         assertEquals(body, template.getBody());
     }
 
+    @And("^I have created a tag$")
+    public void iHaveCreatedATag() throws Throwable {
+        tag = new Tag();
+        tag.setName("Advertising");
+        tag.setTemplates(Collections.singletonList(template.getUrl()));
+        api.createTag(tag);
+        tag = api.getTags().get(api.getTags().size() - 1);
+        assertNotNull(tag);
+    }
+
+    @And("^I change template's tags$")
+    public void iChangeTemplateSTags() throws Throwable {
+        tags = Collections.singletonList(template.getUrl());
+        template.setTags(tags);
+        assertEquals(tags, template.getTags());
+    }
+
     @When("^I PUT a template with ID to the /templates/id endpoint$")
     public void iPUTATemplateWithIDToTheTemplatesIdEndpoint() throws Throwable {
         try {
@@ -220,5 +244,40 @@ public class TemplatesSteps {
             lastApiException = e;
             lastStatusCode = lastApiException.getCode();
         }
+    }
+
+    @And("^Template's name has changed$")
+    public void templateSNameHasChanged() throws Throwable {
+        assertEquals(name, template.getName());
+    }
+
+    @And("^Template's tags has changed$")
+    public void templateSTagsHasChanged() throws Throwable {
+        assertEquals(tags, template.getTags());
+    }
+
+    @And("^Template's body has changed$")
+    public void templateSBodyHasChanged() throws Throwable {
+        assertEquals(body, template.getBody());
+    }
+
+    @When("^I DELETE a template with ID to the /templates/id endpoint$")
+    public void iDELETEATemplateWithIDToTheTemplatesIdEndpoint() throws Throwable {
+        try {
+            lastApiResponse = api.deleteTemplateWithHttpInfo(id);
+            lastApiCallThrewException = false;
+            lastApiException = null;
+            lastStatusCode = lastApiResponse.getStatusCode();
+        } catch (ApiException e) {
+            lastApiCallThrewException = true;
+            lastApiResponse = null;
+            lastApiException = e;
+            lastStatusCode = lastApiException.getCode();
+        }
+    }
+
+    @And("^The number of templates was decremented of (\\d+)$")
+    public void theNumberOfTemplatesWasDecrementedOf(int arg0) throws Throwable {
+        assertEquals(arg0, numberOfTemplates - api.getTemplates().size());
     }
 }

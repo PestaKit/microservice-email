@@ -16,6 +16,9 @@ import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
 
+/**
+ * @author Jérémie Zanone
+ */
 public class EmailsSteps {
 
     private Template template;

@@ -16,6 +16,9 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+/**
+ * @author Loan Lassalle
+ */
 public class TagsStep {
 
     private Template template;
