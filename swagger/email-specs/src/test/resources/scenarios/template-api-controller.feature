@@ -53,10 +53,10 @@ Feature: Spring api controller template
     And Template's tags has changed
     And Template's body has changed
 
-#  Scenario: Delete a template
-#    Given I get ID of last template
-#    When I DELETE a template with ID to the /templates/id endpoint
-#    Then I receive a 200 status code for template
-#    And The number of templates was decremented of 1
-#    When I GET a template with ID to the /templates/id endpoint
-#    Then I receive a 500 status code for template
+  Scenario: Delete a template
+    Given I get ID of last template
+    When I DELETE a template with ID to the /templates/id endpoint
+    Then I receive a 200 status code for template
+    And The number of templates was decremented of 1
+    When I GET a template with ID to the /templates/id endpoint
+    Then I receive a 500 status code for template

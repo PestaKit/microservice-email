@@ -1,6 +1,5 @@
 package io.pestakit.email.api.spec.steps;
 
-
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -19,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
-
 
 public class EmailsSteps {
 
