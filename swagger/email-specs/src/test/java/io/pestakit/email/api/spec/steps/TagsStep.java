@@ -8,13 +8,17 @@ import io.pestakit.email.ApiException;
 import io.pestakit.email.ApiResponse;
 import io.pestakit.email.api.DefaultApi;
 import io.pestakit.email.api.dto.Tag;
+import io.pestakit.email.api.dto.Template;
 import io.pestakit.email.api.spec.helpers.Environment;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
 public class TagsStep {
+
+    private Template template;
 
     private Tag tag;
     private Long id;
@@ -52,8 +56,8 @@ public class TagsStep {
         assertNotNull(tag);
     }
 
-    @And("^I set a name$")
-    public void iSetAName() throws Throwable {
+    @And("^I set tag's name$")
+    public void iSetTagSName() throws Throwable {
         name = "Food";
         tag.setName(name);
         assertEquals(name, tag.getName());
@@ -74,8 +78,8 @@ public class TagsStep {
         }
     }
 
-    @Then("^I receive a (\\d+) status code$")
-    public void iReceiveAStatusCode(int arg0) throws Throwable {
+    @Then("^I receive a (\\d+) status code for tag$")
+    public void iReceiveAStatusCodeForTag(int arg0) throws Throwable {
         assertEquals(arg0, lastStatusCode);
     }
 
@@ -99,8 +103,8 @@ public class TagsStep {
         }
     }
 
-    @And("^Response body should contain data$")
-    public void responseBodyShouldContainData() throws Throwable {
+    @And("^Response body should contain tag data$")
+    public void responseBodyShouldContainTagData() throws Throwable {
         assertNotNull(lastApiResponse.getData());
     }
 
@@ -144,9 +148,11 @@ public class TagsStep {
     }
 
     @And("^I recover tag in response body$")
-    public void iRecoverTagInResponseBody() throws Throwable {
+    public Tag iRecoverTagInResponseBody() throws Throwable {
         tag = (Tag) lastApiResponse.getData();
         assertNotNull(tag);
+
+        return tag;
     }
 
     @And("^ID is same as last tag$")
@@ -164,10 +170,74 @@ public class TagsStep {
         assertEquals(templates, tag.getTemplates());
     }
 
-    @And("^I change the name$")
-    public void iChangeTheName() throws Throwable {
+    @And("^I change tag's name$")
+    public void iChangeTagSName() throws Throwable {
         name = "Drink";
         tag.setName(name);
         assertEquals(name, tag.getName());
+    }
+
+    @And("^I have created a template$")
+    public void iHaveCreatedATemplate() throws Throwable {
+        template = new Template();
+        template.setName("Caco-Calo");
+        template.setBody("<span th:text=\" 'Hello ' + ${title}  + ',\n" +
+                "My name is ' + ${firstName} + '  ' + ${lastName} + '.\n'" +
+                "\"></span>");
+        api.createTemplate(template);
+        template = api.getTemplate((long) api.getTemplates().size());
+        assertNotNull(template);
+    }
+
+    @And("^I change tag's templates$")
+    public void iChangeTagSTemplates() throws Throwable {
+        templates = Collections.singletonList(template.getUrl());
+        tag.setTemplates(templates);
+        assertEquals(templates, tag.getTemplates());
+    }
+
+    @When("^I PUT a tag with ID to the /tags/id endpoint$")
+    public void iPUTATagWithIDToTheTagsIdEndpoint() throws Throwable {
+        try {
+            lastApiResponse = api.updateTagWithHttpInfo(String.valueOf(id), tag);
+            lastApiCallThrewException = false;
+            lastApiException = null;
+            lastStatusCode = lastApiResponse.getStatusCode();
+        } catch (ApiException e) {
+            lastApiCallThrewException = true;
+            lastApiResponse = null;
+            lastApiException = e;
+            lastStatusCode = lastApiException.getCode();
+        }
+    }
+
+    @And("^Tag's name has changed$")
+    public void tagSNameHasChanged() throws Throwable {
+        assertEquals(name, tag.getName());
+    }
+
+    @And("^Tag's templates has changed$")
+    public void tagSTemplatesHasChanged() throws Throwable {
+        assertEquals(templates, tag.getTemplates());
+    }
+
+    @When("^I DELETE a tag with ID to the /tags/id endpoint$")
+    public void iDELETEATagWithIDToTheTagsIdEndpoint() throws Throwable {
+        try {
+            lastApiResponse = api.deleteTagWithHttpInfo(id);
+            lastApiCallThrewException = false;
+            lastApiException = null;
+            lastStatusCode = lastApiResponse.getStatusCode();
+        } catch (ApiException e) {
+            lastApiCallThrewException = true;
+            lastApiResponse = null;
+            lastApiException = e;
+            lastStatusCode = lastApiException.getCode();
+        }
+    }
+
+    @And("^The number of tags was decremented of (\\d+)$")
+    public void theNumberOfTagsWasDecrementedOf(int arg0) throws Throwable {
+        assertEquals(arg0, numberOfTags - api.getTags().size());
     }
 }
