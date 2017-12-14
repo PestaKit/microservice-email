@@ -1,7 +1,6 @@
 package io.pestakit.email.api.spec.steps;
 
 
-import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -9,7 +8,6 @@ import cucumber.api.java.en.When;
 import io.pestakit.email.ApiException;
 import io.pestakit.email.ApiResponse;
 import io.pestakit.email.api.DefaultApi;
-import io.pestakit.email.api.dto.Email;
 import io.pestakit.email.api.dto.EmailPrepared;
 import io.pestakit.email.api.dto.Parameter;
 import io.pestakit.email.api.dto.Template;
@@ -20,8 +18,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
+
 
 public class EmailsSteps {
 
@@ -58,30 +56,21 @@ public class EmailsSteps {
         int oldNbTemplate = api.getTemplates().size();
 
         template = new Template();
-        template.setBody("Bonjour, @Title @FirstName @LastName, comment allez vous ?");
+        template.setBody("<span th:text\"= 'Bonjour ' + ${username}  + ',\n" +
+                "Bienvenue sur notre plateforme d'échange'.\n'" +
+                "\"></span>");
         template.setName("TemplateBonjour");
-        template.addParametersItem("@Title");
-        template.addParametersItem("@FirstName");
-        template.addParametersItem("@LastName");
-
         api.createTemplate(template);
 
-        template.setBody("Bonsoir, @Title @FirstName @LastName, comment allez vous ? @Bye");
+        template = new Template();
+        template.setBody("<span th:text=\" 'Bonsoir ' + ${title}  + ',\n" + "My name is ' + ${firstName} + ' ' + ${lastName} + '.\n'" +
+                "\"></span>");
         template.setName("TemplateBonsoir");
-        template.addParametersItem("@Title");
-        template.addParametersItem("@FirstName");
-        template.addParametersItem("@LastName");
-        template.addParametersItem("@Bye");
-
         api.createTemplate(template);
 
-        template.setBody("@Greetings, @Title @FirstName @LastName, comment allez vous ?");
-        template.setName("TemplateGreetings");
-        template.addParametersItem("@Greetings");
-        template.addParametersItem("@Title");
-        template.addParametersItem("@FirstName");
-        template.addParametersItem("@LastName");
-
+        template = new Template();
+        template.setBody("<span th:text=\" 'Toute l'équipe vous souhaite de bonnes fêtes de fin d'année',\n\"></span>");
+        template.setName("FinAnnée");
         api.createTemplate(template);
 
         int newNbTemplate = api.getTemplates().size();
@@ -121,21 +110,21 @@ public class EmailsSteps {
     public void iSetParameters() throws Throwable {
 
         Parameter parameter = new Parameter();
-        parameter.setKey("@Title");
+        parameter.setKey("title");
         parameter.setValue("Monsieur");
         email.addParametersItem(parameter);
 
         parameter = new Parameter();
-        parameter.setKey("@FirstName");
+        parameter.setKey("firstName");
         parameter.setValue("Jérémie");
         email.addParametersItem(parameter);
 
         parameter = new Parameter();
-        parameter.setKey("@LastName");
+        parameter.setKey("lastName");
         parameter.setValue("Zanone");
         email.addParametersItem(parameter);
 
-        email.setTemplate("localhost:8080/api/templates/1");
+        email.setTemplate(api.getTemplate(2l).getUrl());
 
     }
 
@@ -196,5 +185,12 @@ public class EmailsSteps {
     @And("^I set an invalid sender$")
     public void iSetAnInvalidSender() throws Throwable {
         email.setSender("ACH NEIN JE NE SUIS PAS UN SENDER VALIDE");
+    }
+
+    @And("^No invalid emails are stored$")
+    public void noInvalidEmailsAreStored() throws Throwable {
+        int idLastEmail = api.getEmails().size();
+        assertTrue(api.getEmail(Long.valueOf(idLastEmail)).getSender().contains("@"));
+        assertFalse(api.getEmail(Long.valueOf(idLastEmail)).getSender().contains(" "));
     }
 }

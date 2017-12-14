@@ -25,6 +25,7 @@ Feature: Spring api controller email
     When I POST it to the /email endpoint
     Then I get a 422 status code
     And No email is send
+    And No invalid emails are stored
 
   Scenario: send from an invalid sender
     Given I have a email object
@@ -35,5 +36,5 @@ Feature: Spring api controller email
     When I POST it to the /email endpoint
     Then I get a 422 status code
     And No email is send
-
+    And No invalid emails are stored
 
