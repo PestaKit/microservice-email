@@ -79,21 +79,23 @@ public class EmailApiController implements EmailsApi {
 
         // Prepare an email with headers, template and parameters
         EmailEntity entity = toEmailEntity(emailPrepared);
-        emailRepository.save(entity);  // Save email in database
-
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(entity.getId())
-                .toUri();
-
-        // Update email's URL in database
-        entity.setUrl(location.toString());
-        emailRepository.save(entity);
-
+        URI location = null;
         // Send the email
         try {
             emailService.sendHtmlEmail(toEmail(entity));
+
+            emailRepository.save(entity);  // Save email in database
+
+            location = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(entity.getId())
+                    .toUri();
+
+            // Update email's URL in database
+            entity.setUrl(location.toString());
+            emailRepository.save(entity);
+
         } catch (MessagingException e) {
             throw new MailParseException("Error mail", e);
         }
