@@ -24,7 +24,7 @@ public interface EmailService {
      * Check if parameters of the email match the parameters expected from the template
      * @param emailParameters email's parameters
      * @param templateParameters parameters in the template
-     * @return true if parameters are correct, flase otherwise
+     * @return true if parameters are correct, false otherwise
      */
     boolean checkParameters(List<Parameter> emailParameters, List<String> templateParameters);
 

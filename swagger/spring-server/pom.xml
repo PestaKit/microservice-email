@@ -127,5 +127,9 @@
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
             <version>1.5.6.RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
     </dependencies>
 </project>

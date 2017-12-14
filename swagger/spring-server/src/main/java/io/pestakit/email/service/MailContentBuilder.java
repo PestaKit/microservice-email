@@ -12,7 +12,6 @@ import java.util.List;
  * This class is used to fill emails template
  * @author Tano Iannetta and Wojciech Myszkorowski
  */
-
 @Service
 public class MailContentBuilder {
 
@@ -36,9 +35,6 @@ public class MailContentBuilder {
         for (Parameter p: parameters) {
             context.setVariable(p.getKey(), p.getValue());
         }
-        System.out.println(context.getVariables());
-
-
         return staticTemplateService.processTemplateCode(text, context);
 
 
