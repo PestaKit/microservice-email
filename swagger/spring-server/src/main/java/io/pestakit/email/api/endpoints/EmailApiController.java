@@ -176,7 +176,7 @@ public class EmailApiController implements EmailsApi {
             //check if parameters are corrects
             if(!emailService.checkParameters(parametersList, templateEntity.getParameters()))
             {
-                throw  new InvalidParameterException("error in parameters");
+                throw  new InvalidParameterException("parameters don't match");
             }
             // build content
             Context context = new Context();

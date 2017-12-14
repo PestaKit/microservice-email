@@ -28,6 +28,9 @@ import java.util.List;
 public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 
 
+    public static final String NO_MAIL_SENT = "No mail was sent";
+    public static final String ERROR_OCCURRED = "An error occurred";
+
     /**
      * Handle badRequestException
      * @param ex exception
@@ -63,16 +66,16 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
         // handle MailParseException
         if (ex.getClass() == MailParseException.class) {
             ApiError apiError = new ApiError(
-                    HttpStatus.UNPROCESSABLE_ENTITY, "No mail was sent" ,ex.getLocalizedMessage());
+                    HttpStatus.UNPROCESSABLE_ENTITY, NO_MAIL_SENT ,ex.getLocalizedMessage());
             return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
         } else if (ex.getClass() == AddressException.class) {
             ApiError apiError = new ApiError(
-                    HttpStatus.UNPROCESSABLE_ENTITY, "No mail was sent" ,ex.getLocalizedMessage());
+                    HttpStatus.UNPROCESSABLE_ENTITY, NO_MAIL_SENT ,ex.getLocalizedMessage());
             return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
         }
         else{ // all other exceptions
             ApiError apiError = new ApiError(
-                    HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage(), "error occured");
+                    HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage(), ERROR_OCCURRED);
             return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
         }
 
