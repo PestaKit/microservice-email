@@ -40,7 +40,7 @@ public class StaticTemplateService {
         templateEngine.setMessageResolver(messageResolver);
         templateEngine.setTemplateResolver(templateResolver);
         templateEngine.initialize();
-        return templateEngine.process("dummy", context);
+        return templateEngine.process("template", context);
     }
 }
 
