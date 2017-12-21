@@ -129,7 +129,10 @@ public class TemplatesSteps {
 
     @And("^I get ID of last template")
     public void iGetIDOfLastTemplate() throws Throwable {
-        id = (long) api.getTemplates().size();
+        int size = api.getTemplates().size();
+        String url = api.getTemplates().get(size - 1).getUrl();
+        int indexOfId = url.lastIndexOf('/');
+        id = Long.valueOf(Integer.parseInt(url.substring(indexOfId + 1, url.length())));
         assertNotEquals(0, (long) id);
     }
 
@@ -184,7 +187,13 @@ public class TemplatesSteps {
 
     @And("^ID is same as last template")
     public void idIsSameAsLastTemplate() throws Throwable {
-        assertEquals((long) id, api.getTemplates().size());
+        int size = api.getTemplates().size();
+        String url = api.getTemplates().get(size - 1).getUrl();
+        int indexOfId = url.lastIndexOf('/');
+        long recoveredID = Long.valueOf(Integer.parseInt(url.substring(indexOfId + 1, url.length())));
+
+
+        assertEquals((long) id, recoveredID);
     }
 
     @And("^name is same as last template")
