@@ -23,6 +23,4 @@ public class Environment {
     public DefaultApi getApi() {
         return api;
     }
-
-
 }

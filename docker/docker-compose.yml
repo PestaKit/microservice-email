@@ -5,7 +5,7 @@ services:
     environment:
      - MYSQL_ROOT_PASSWORD=adminpw
     ports:
-     - "3306:3306"
+     - "3305:3306"
   phpmyadmin:
     build: ./phpmyadmin
     environment:
