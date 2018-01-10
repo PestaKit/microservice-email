@@ -15,10 +15,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-07-26T19:36:34.802Z")
 
@@ -176,18 +179,29 @@ public class TemplateApiController implements TemplatesApi {
      * @param tags template's tags
      */
     private List<String> tagsIfExist(List<String> tags) {
+        Properties properties = new Properties();
+
         for (Iterator<String> iterator = tags.iterator(); iterator.hasNext(); ) {
             String tag = iterator.next();
 
-            try {
-//                 TODO: Vérifier si l'URL est bien de la forme api/tags/id
-                Long id = Long.valueOf(tag.substring(tag.lastIndexOf('/') + 1));
+            try (InputStream resourceStream = Thread.currentThread()
+                    .getContextClassLoader()
+                    .getResourceAsStream("application.properties")) {
+
+                properties.load(resourceStream);
+
+                int firstIndex = tag.indexOf('/', tag.indexOf('/') + 2) + 1;
+                int lastIndex = tag.lastIndexOf('/') + 1;
+
+                String endpointRequest = tag.substring(firstIndex, lastIndex);
+                Long id = Long.valueOf(tag.substring(lastIndex));
 
                 // Get template in database
-                if (tagRepository.findOne(id) == null) {
+                if (!endpointRequest.equals(properties.getProperty("endpoints.tag"))
+                        || tagRepository.findOne(id) == null) {
                     iterator.remove();
                 }
-            } catch (NumberFormatException e) {
+            } catch (IOException | NumberFormatException e) {
                 iterator.remove();
             }
         }
