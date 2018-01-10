@@ -14,9 +14,3 @@ services:
      - "6060:80"
     links:
      - mysql:db
-  spring:
-    build: ./java
-    environment:
-     - spring_datasource_url=jdbc:mysql://mysql:3306/data_email?useSSL=false
-    ports:
-     - "8080:8080"

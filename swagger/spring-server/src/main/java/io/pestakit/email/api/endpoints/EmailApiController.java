@@ -150,7 +150,9 @@ public class EmailApiController implements EmailsApi {
      * @return an email entity
      */
     private EmailEntity toEmailEntity(EmailPrepared emailPrepared) {
+        Properties properties = new Properties();
         EmailEntity entity = new EmailEntity();
+        String endpointRequest = new String();
 
         entity.setSender(emailPrepared.getSender());
         entity.setRecipients(emailPrepared.getRecipients());
