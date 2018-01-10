@@ -33,9 +33,6 @@ import java.util.Properties;
 @Controller
 public class TemplateApiController implements TemplatesApi {
 
-//     TODO: Exceptions des actions CRUD
-//     TODO: Retour des fonctions
-
     /**
      * Used to CRUD actions on tag table
      */

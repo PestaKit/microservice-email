@@ -58,8 +58,7 @@ public class EmailEntity implements Serializable {
     /**
      * Email's body
      */
-    // TODO: Voir pour une gestion dynamique. class Text ?
-    @Column(length=10000)
+    @Lob
     private String body;
 
     /**

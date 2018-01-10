@@ -42,10 +42,6 @@ import java.util.Properties;
 @Controller
 public class EmailApiController implements EmailsApi {
 
-//     TODO: Exceptions des actions CRUD
-//     TODO: Retour des fonctions
-//     TODO: JavaDoc et commentaires
-
     /**
      * Used to CRUD actions on tag table
      */
@@ -75,7 +71,7 @@ public class EmailApiController implements EmailsApi {
      * Create an email with an email prepared
      *
      * @param emailPrepared email prepared
-     * @return TODO
+     * @return response entity
      */
     @Override
     public ResponseEntity<Object> createEmail(@ApiParam(value = "Create an email", required = true) @RequestBody EmailPrepared emailPrepared) {
@@ -154,9 +150,7 @@ public class EmailApiController implements EmailsApi {
      * @return an email entity
      */
     private EmailEntity toEmailEntity(EmailPrepared emailPrepared) {
-        Properties properties = new Properties();
         EmailEntity entity = new EmailEntity();
-        String endpointRequest = new String();
 
         entity.setSender(emailPrepared.getSender());
         entity.setRecipients(emailPrepared.getRecipients());

@@ -31,9 +31,6 @@ import java.util.Properties;
 @Controller
 public class TagApiController implements TagsApi {
 
-//     TODO: Exceptions des actions CRUD
-//     TODO: Retour des fonctions
-
     /**
      * Used to CRUD actions on tag table
      */
@@ -51,7 +48,7 @@ public class TagApiController implements TagsApi {
      * Create a tag
      *
      * @param tag tag to create
-     * @return TODO
+     * @return response entity
      */
     @Override
     public ResponseEntity<Object> createTag(@ApiParam(value = "Create a tag", required = true) @RequestBody Tag tag) {
@@ -115,7 +112,7 @@ public class TagApiController implements TagsApi {
      * Update a tag
      *
      * @param id tag ID
-     * @return TODO
+     * @return response entity
      */
     @Override
     public ResponseEntity<Void> updateTag(@ApiParam(value = "tag ID", required = true) @PathVariable("id") String id,
@@ -140,7 +137,7 @@ public class TagApiController implements TagsApi {
      * Delete a tag
      *
      * @param id tag ID
-     * @return TODO
+     * @return response entity
      */
     @Override
     public ResponseEntity<Void> deleteTag(@ApiParam(value = "tag ID", required = true) @PathVariable("id") Long id) {
