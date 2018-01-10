@@ -56,7 +56,7 @@ public class TemplateApiController implements TemplatesApi {
      * Create a template
      *
      * @param template template to create
-     * @return TODO
+     * @return response entity
      */
     @Override
     public ResponseEntity<Object> createTemplate(@ApiParam(value = "Create a template", required = true) @RequestBody TemplateBody template) {
@@ -121,7 +121,7 @@ public class TemplateApiController implements TemplatesApi {
      * Update a template
      *
      * @param id template ID
-     * @return TODO
+     * @return response entity
      */
     @Override
     public ResponseEntity<Void> updateTemplate(@ApiParam(value = "template ID", required = true) @PathVariable("id") String id,
@@ -152,7 +152,7 @@ public class TemplateApiController implements TemplatesApi {
      * Delete a template
      *
      * @param id template ID
-     * @return TODO
+     * @return response entity
      */
     @Override
     public ResponseEntity<Void> deleteTemplate(@ApiParam(value = "template ID", required = true) @PathVariable("id") Long id) {
