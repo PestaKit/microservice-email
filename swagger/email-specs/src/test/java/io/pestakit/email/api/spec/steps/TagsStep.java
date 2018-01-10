@@ -17,7 +17,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 /**
- * @author Loan Lassalle
+ * @author Jérémie Zanone & Loan Lassalle
  */
 public class TagsStep {
 
@@ -118,7 +118,10 @@ public class TagsStep {
 
     @And("^I get ID of last tag$")
     public void iGetIDOfLastTag() throws Throwable {
-        id = (long) api.getTags().size();
+        int size = api.getTags().size();
+        String url = api.getTags().get(size - 1).getUrl();
+        int indexOfId = url.lastIndexOf('/');
+        id = Long.valueOf(Integer.parseInt(url.substring(indexOfId + 1, url.length())));
         assertNotEquals(0, (long) id);
     }
 
@@ -160,7 +163,11 @@ public class TagsStep {
 
     @And("^ID is same as last tag$")
     public void idIsSameAsLastTag() throws Throwable {
-        assertEquals((long) id, api.getTags().size());
+        int size = api.getTags().size();
+        String url = api.getTags().get(size - 1).getUrl();
+        int indexOfId = url.lastIndexOf('/');
+        long recoveredID = Long.valueOf(Integer.parseInt(url.substring(indexOfId + 1, url.length())));
+        assertEquals((long) id, recoveredID);
     }
 
     @And("^name is same as last tag$")

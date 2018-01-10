@@ -78,8 +78,9 @@ public class EmailApiController implements EmailsApi {
     public ResponseEntity<Object> createEmail(@ApiParam(value = "Create an email", required = true) @RequestBody EmailPrepared emailPrepared) {
 
         // Prepare an email with headers, template and parameters
-        EmailEntity entity = toEmailEntity(emailPrepared);
+        EmailEntity entity = entity = toEmailEntity(emailPrepared);
         URI location = null;
+
         // Send the email
         try {
             emailService.sendHtmlEmail(toEmail(entity));
@@ -99,6 +100,7 @@ public class EmailApiController implements EmailsApi {
         } catch (MessagingException e) {
             throw new MailParseException("Error mail", e);
         }
+
         return ResponseEntity.created(location).build();
     }
 
@@ -167,20 +169,23 @@ public class EmailApiController implements EmailsApi {
             Long id = Long.valueOf(template.substring(template.lastIndexOf('/') + 1));
             templateEntity = templateRepository.findOne(id);
         } catch (NumberFormatException e) {
-
+            throw new InvalidParameterException(e.toString());
         }
 
         // Insert values in place of parameters
         if (templateEntity != null) {
             List<Parameter> parametersList = emailPrepared.getParameters();
-            //check if parameters are corrects
-            if(!emailService.checkParameters(parametersList, templateEntity.getParameters()))
-            {
-                throw  new InvalidParameterException("parameters don't match");
+
+            // Check if parameters are corrects
+            if (!emailService.checkParameters(parametersList, templateEntity.getParameters())) {
+                throw new InvalidParameterException("Parameters do not match");
             }
-            // build content
+
+            // Build content
             Context context = new Context();
             body = mailContentBuilder.buildContent(parametersList, templateEntity.getBody());
+        } else {
+            throw new InvalidParameterException("Template does not exist");
         }
 
         // Set body's email to send
