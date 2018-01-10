@@ -39,7 +39,6 @@ public class TemplateEntity implements Serializable {
      * List of tag's url
      * Used to associate tags to tag
      */
-    // TODO: Voir comment utiliser une class ShortTag
     @ElementCollection
     private List<String> tags;
 
@@ -50,6 +49,10 @@ public class TemplateEntity implements Serializable {
     @ElementCollection
     private List<String> parameters;
 
+    /**
+     * Template body
+     */
+    @Lob
     private String body;
 
     /**

@@ -27,9 +27,9 @@ import java.util.List;
 public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 
 
-    public static final String NO_MAIL_SENT = "No mail was sent";
-    public static final String ERROR_PARAMETER = "Error in parameter";
-    public static final String ERROR_OCCURRED = "An error occurred";
+    private static final String NO_MAIL_SENT = "No mail was sent";
+    private static final String ERROR_PARAMETER = "Error in parameter";
+    private static final String ERROR_OCCURRED = "An error occurred";
 
     /**
      * Handle badRequestException

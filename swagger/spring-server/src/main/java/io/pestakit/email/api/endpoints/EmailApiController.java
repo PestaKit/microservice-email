@@ -39,10 +39,6 @@ import java.util.List;
 @Controller
 public class EmailApiController implements EmailsApi {
 
-//     TODO: Exceptions des actions CRUD
-//     TODO: Retour des fonctions
-//     TODO: JavaDoc et commentaires
-
     /**
      * Used to CRUD actions on tag table
      */
@@ -72,7 +68,7 @@ public class EmailApiController implements EmailsApi {
      * Create an email with an email prepared
      *
      * @param emailPrepared email prepared
-     * @return TODO
+     * @return response entity
      */
     @Override
     public ResponseEntity<Object> createEmail(@ApiParam(value = "Create an email", required = true) @RequestBody EmailPrepared emailPrepared) {
@@ -164,7 +160,6 @@ public class EmailApiController implements EmailsApi {
 
         // Get template in database
         try {
-//            TODO: Vérifier si l'URL est bien de la forme api/templates/id
             String template = emailPrepared.getTemplate();
             Long id = Long.valueOf(template.substring(template.lastIndexOf('/') + 1));
             templateEntity = templateRepository.findOne(id);
