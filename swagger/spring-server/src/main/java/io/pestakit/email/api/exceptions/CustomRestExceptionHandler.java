@@ -20,8 +20,7 @@ import java.util.List;
 
 /**
  * This class will handle exceptions
- * We use this to send more specific messages when en exception occurs.
- *
+ * We use this to send more specific messages when an exception occurs.
  * @author Tano Iannetta
  */
 @ControllerAdvice
@@ -45,7 +44,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
             HttpHeaders headers,
             HttpStatus status,
             WebRequest request) {
-        List<String> errors = new ArrayList<String>();
+        List<String> errors = new ArrayList<>();
         for (FieldError error : ex.getBindingResult().getFieldErrors()) {
             errors.add(error.getField() + ": " + error.getDefaultMessage());
         }
