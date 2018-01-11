@@ -15,8 +15,6 @@ services:
     links:
      - mysql:db
   spring:
-    env_file:
-     - ./myvars.env   
     build: ./java
     entrypoint: ["/opt/wait_for_it.sh", "mysql:3306", "--", "java","-jar","/home/swagger-spring-1.0.0.jar"]
     environment:
