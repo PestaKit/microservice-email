@@ -20,24 +20,23 @@ import java.util.List;
 
 /**
  * This class will handle exceptions
- * We use this to send more specific messages when en exception occurs.
- *
+ * We use this to send more specific messages when an exception occurs.
  * @author Tano Iannetta
  */
 @ControllerAdvice
 public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 
 
-    public static final String NO_MAIL_SENT = "No mail was sent";
-    public static final String ERROR_PARAMETER = "Error in parameter";
-    public static final String ERROR_OCCURRED = "An error occurred";
+    private static final String NO_MAIL_SENT = "No mail was sent";
+    private static final String ERROR_PARAMETER = "Error in parameter";
+    private static final String ERROR_OCCURRED = "An error occurred";
 
     /**
      * Handle badRequestException
      * @param ex exception
      * @param headers header to send
      * @param status to send
-     * @param request that caused the error
+     * @param request that caused    the error
      * @return handle that send back the response
      */
     @Override
@@ -46,7 +45,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
             HttpHeaders headers,
             HttpStatus status,
             WebRequest request) {
-        List<String> errors = new ArrayList<String>();
+        List<String> errors = new ArrayList<>();
         for (FieldError error : ex.getBindingResult().getFieldErrors()) {
             errors.add(error.getField() + ": " + error.getDefaultMessage());
         }

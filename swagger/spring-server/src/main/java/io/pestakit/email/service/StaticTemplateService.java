@@ -24,7 +24,7 @@ import java.nio.charset.StandardCharsets;
  * It was found in the following thymeleaf's repository
  * Ref: https://github.com/thymeleaf/thymeleaf-itutorial/blob/2.1-master/src/test/java/org/thymeleaf/tools/memoryexecutor/StaticTemplateExecutorTest.java
  * @author anandchakru
- *
+ * Modified by Tano Iannetta
  */
 @Service
 public class StaticTemplateService {

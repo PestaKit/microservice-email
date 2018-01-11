@@ -21,10 +21,13 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.thymeleaf.context.Context;
 
 import javax.mail.MessagingException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-07-26T19:36:34.802Z")
 
@@ -38,10 +41,6 @@ import java.util.List;
  */
 @Controller
 public class EmailApiController implements EmailsApi {
-
-//     TODO: Exceptions des actions CRUD
-//     TODO: Retour des fonctions
-//     TODO: JavaDoc et commentaires
 
     /**
      * Used to CRUD actions on tag table
@@ -72,7 +71,7 @@ public class EmailApiController implements EmailsApi {
      * Create an email with an email prepared
      *
      * @param emailPrepared email prepared
-     * @return TODO
+     * @return response entity
      */
     @Override
     public ResponseEntity<Object> createEmail(@ApiParam(value = "Create an email", required = true) @RequestBody EmailPrepared emailPrepared) {
@@ -151,7 +150,9 @@ public class EmailApiController implements EmailsApi {
      * @return an email entity
      */
     private EmailEntity toEmailEntity(EmailPrepared emailPrepared) {
+        Properties properties = new Properties();
         EmailEntity entity = new EmailEntity();
+        String endpointRequest = new String();
 
         entity.setSender(emailPrepared.getSender());
         entity.setRecipients(emailPrepared.getRecipients());
@@ -163,17 +164,27 @@ public class EmailApiController implements EmailsApi {
         String body = "";
 
         // Get template in database
-        try {
-//            TODO: Vérifier si l'URL est bien de la forme api/templates/id
+        try (InputStream resourceStream = Thread.currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream("application.properties")) {
+
+            properties.load(resourceStream);
             String template = emailPrepared.getTemplate();
-            Long id = Long.valueOf(template.substring(template.lastIndexOf('/') + 1));
+
+            int firstIndex = template.indexOf('/', template.indexOf('/') + 2) + 1;
+            int lastIndex = template.lastIndexOf('/') + 1;
+
+            endpointRequest = template.substring(firstIndex, lastIndex);
+            Long id = Long.valueOf(template.substring(lastIndex));
+
             templateEntity = templateRepository.findOne(id);
-        } catch (NumberFormatException e) {
+        } catch (IOException | NumberFormatException e) {
             throw new InvalidParameterException(e.toString());
         }
 
         // Insert values in place of parameters
-        if (templateEntity != null) {
+        if (endpointRequest.equals(properties.getProperty("endpoints.template"))
+                && templateEntity != null) {
             List<Parameter> parametersList = emailPrepared.getParameters();
 
             // Check if parameters are corrects

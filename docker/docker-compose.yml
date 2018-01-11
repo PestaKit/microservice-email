@@ -16,6 +16,7 @@ services:
      - mysql:db
   spring:
     build: ./java
+    entrypoint: ["/opt/wait_for_it.sh", "mysql:3306", "--", "java","-jar","/home/swagger-spring-1.0.0.jar"]
     environment:
      - spring_datasource_url=jdbc:mysql://mysql:3306/data_email?useSSL=false
      - spring_mail_host=${SMTPHOST}

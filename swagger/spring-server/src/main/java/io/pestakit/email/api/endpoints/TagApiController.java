@@ -13,10 +13,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-07-26T19:36:34.802Z")
 
@@ -27,9 +30,6 @@ import java.util.List;
  */
 @Controller
 public class TagApiController implements TagsApi {
-
-//     TODO: Exceptions des actions CRUD
-//     TODO: Retour des fonctions
 
     /**
      * Used to CRUD actions on tag table
@@ -48,7 +48,7 @@ public class TagApiController implements TagsApi {
      * Create a tag
      *
      * @param tag tag to create
-     * @return TODO
+     * @return response entity
      */
     @Override
     public ResponseEntity<Object> createTag(@ApiParam(value = "Create a tag", required = true) @RequestBody Tag tag) {
@@ -112,7 +112,7 @@ public class TagApiController implements TagsApi {
      * Update a tag
      *
      * @param id tag ID
-     * @return TODO
+     * @return response entity
      */
     @Override
     public ResponseEntity<Void> updateTag(@ApiParam(value = "tag ID", required = true) @PathVariable("id") String id,
@@ -137,7 +137,7 @@ public class TagApiController implements TagsApi {
      * Delete a tag
      *
      * @param id tag ID
-     * @return TODO
+     * @return response entity
      */
     @Override
     public ResponseEntity<Void> deleteTag(@ApiParam(value = "tag ID", required = true) @PathVariable("id") Long id) {
@@ -161,18 +161,29 @@ public class TagApiController implements TagsApi {
      * @param templates tag's templates
      */
     private List<String> templatesIfExist(List<String> templates) {
+        Properties properties = new Properties();
+
         for (Iterator<String> iterator = templates.iterator(); iterator.hasNext(); ) {
             String template = iterator.next();
 
-            try {
-//                 TODO: Vérifier si l'URL est bien de la forme api/templates/id
-                Long id = Long.valueOf(template.substring(template.lastIndexOf('/') + 1));
+            try (InputStream resourceStream = Thread.currentThread()
+                    .getContextClassLoader()
+                    .getResourceAsStream("application.properties")) {
+
+                properties.load(resourceStream);
+
+                int firstIndex = template.indexOf('/', template.indexOf('/') + 2) + 1;
+                int lastIndex = template.lastIndexOf('/') + 1;
+
+                String endpointRequest = template.substring(firstIndex, lastIndex);
+                Long id = Long.valueOf(template.substring(lastIndex));
 
                 // Get tag in database
-                if (templateRepository.findOne(id) == null) {
+                if (!endpointRequest.equals(properties.getProperty("endpoints.template"))
+                        || templateRepository.findOne(id) == null) {
                     iterator.remove();
                 }
-            } catch (NumberFormatException e) {
+            } catch (IOException | NumberFormatException e) {
                 iterator.remove();
             }
         }

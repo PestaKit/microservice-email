@@ -13,8 +13,8 @@ import java.util.List;
 
 
 /**
- * @see EmailService
  * @author Tano Iannetta
+ * @see EmailService
  */
 @Component
 public class EmailServiceImp implements EmailService {
@@ -28,7 +28,7 @@ public class EmailServiceImp implements EmailService {
 
         MimeMessage message = mailSender.createMimeMessage();
 
-        MimeMessageHelper helper = new MimeMessageHelper(message, false,"utf-8");
+        MimeMessageHelper helper = new MimeMessageHelper(message, false, "utf-8");
         message.setContent(email.getBody(), "text/html");
         helper.setFrom(email.getSender());
         helper.setTo(email.getRecipients().toArray(new String[email.getRecipients().size()]));
@@ -44,14 +44,12 @@ public class EmailServiceImp implements EmailService {
     @Override
     public boolean checkParameters(List<Parameter> emailParameters, List<String> templateParameters) {
 
-        if(emailParameters.size() != templateParameters.size())
-        {
+        if (emailParameters.size() != templateParameters.size()) {
             return false;
         }
 
         for (Parameter param : emailParameters) {
-            if (!templateParameters.contains(param.getKey()))
-            {
+            if (!templateParameters.contains(param.getKey())) {
                 return false;
             }
         }
