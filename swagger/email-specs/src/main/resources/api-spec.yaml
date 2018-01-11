@@ -240,7 +240,6 @@ definitions:
       tags:
         type: array
         items:
-#         TODO: Voir comment utiliser une class ShortTag
           type: string
       body:
         type: string
@@ -255,7 +254,6 @@ definitions:
       tags:
         type: array
         items:
-#         TODO: Voir comment utiliser une class ShortTag
           type: string
       parameters:
         type: array
