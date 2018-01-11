@@ -18,5 +18,10 @@ services:
     build: ./java
     environment:
      - spring_datasource_url=jdbc:mysql://mysql:3306/data_email?useSSL=false
+     - spring_mail_host=${SMTPHOST}
+     - spring_mail_port=25
+     - spring_mail_properties.mail.smtp.auth=true
+     - spring_mail_username=${USERNAME}
+     - spring_mail_password=${PASSWORD}
     ports:
      - "8080:8080"
