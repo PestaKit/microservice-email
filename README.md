@@ -25,5 +25,5 @@ Here are the steps you need to follow in order to use our service:
 
 
 
-Authors: Tano Iannetta, Loan Lassalle, Jérémie Zanone & Wojciech Myszkorowski
+Authors: Tano Iannetta, Loan Lassalle, Jérémie Zanone.  Wojciech Myszkorowski
 ---
